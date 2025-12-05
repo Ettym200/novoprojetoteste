@@ -89,48 +89,71 @@ Acesse [http://localhost:3000](http://localhost:3000) no navegador.
 ## 🏗️ Estrutura do Projeto
 
 ```
-next-replicado/
+bi-frontend/
 ├── src/
-│   ├── app/                    # App Router (páginas)
-│   │   ├── page.tsx           # Dashboard Geral (/)
-│   │   ├── affiliates/        # Página de Afiliados
-│   │   ├── players/           # Página de Jogadores
-│   │   ├── campaigns/         # Página de Campanhas
-│   │   ├── analytics/         # Página de Análises
-│   │   ├── settings/          # Página de Configurações
+│   ├── app/                    # Páginas Next.js (App Router)
+│   │   ├── page.tsx           # Dashboard principal (usa dashboardService)
+│   │   ├── affiliates/        # Página de afiliados (refatorada)
+│   │   │   └── page.tsx       # 336 linhas (-37% após refatoração)
+│   │   ├── campaigns/         # Página de campanhas (refatorada)
+│   │   │   └── page.tsx       # 348 linhas (-32% após refatoração)
+│   │   ├── players/           # Página de jogadores
+│   │   ├── analytics/         # Página de análises
+│   │   ├── settings/          # Página de configurações
 │   │   ├── layout.tsx         # Layout principal
-│   │   ├── providers.tsx       # Providers (React Query, etc)
+│   │   ├── providers.tsx      # Providers (React Query)
 │   │   └── globals.css        # Estilos globais
-│   ├── components/
-│   │   ├── dashboard/         # Componentes específicos do dashboard
-│   │   ├── layout/            # Componentes de layout (Sidebar, Header)
+│   ├── components/             # Componentes React
+│   │   ├── dashboard/         # Componentes do dashboard
+│   │   │   ├── AffiliateMetricsTable.tsx  # Otimizado com hooks
+│   │   │   ├── CampaignTable.tsx          # Otimizado com hooks
+│   │   │   ├── KpiCard.tsx                # Aceita valores numéricos
+│   │   │   ├── MetricChart.tsx
+│   │   │   └── ...
+│   │   ├── layout/            # Componentes de layout
+│   │   │   ├── AppSidebar.tsx
+│   │   │   └── DashboardHeader.tsx
 │   │   └── ui/                # Componentes shadcn/ui
-│   │       ├── sidebar.tsx    # Componente principal (140 linhas)
+│   │       ├── sidebar.tsx    # Componente principal (140 linhas, refatorado)
 │   │       ├── sidebar-context.tsx    # Provider e Context
 │   │       ├── sidebar-menu.tsx       # Componentes de menu
 │   │       ├── sidebar-parts.tsx      # Componentes auxiliares
 │   │       └── sidebar-group.tsx      # Componentes de grupo
-│   ├── hooks/                  # Custom hooks
-│   │   ├── useTableSort.ts    # Hook para ordenação de tabelas
-│   │   ├── useDebounce.ts     # Hook para debounce
-│   │   └── useDateRange.ts    # Hook para seleção de datas
+│   ├── hooks/                  # Hooks customizados
+│   │   ├── useTableSort.ts    # Ordenação de tabelas
+│   │   ├── useDebounce.ts     # Debounce de valores
+│   │   └── useDateRange.ts    # Seleção de intervalo de datas
 │   ├── lib/                    # Utilitários e configurações
-│   │   ├── api/               # Cliente HTTP e endpoints
-│   │   ├── constants/         # Constantes do projeto
+│   │   ├── api/               # Cliente HTTP
+│   │   │   ├── base.ts        # Cliente base e helpers
+│   │   │   └── endpoints.ts   # Endpoints centralizados
+│   │   ├── constants/         # Constantes
+│   │   │   └── status.ts      # Status colors e labels
 │   │   ├── services/          # Serviços de API
+│   │   │   ├── affiliateService.ts  # Hooks para afiliados (com totais)
+│   │   │   ├── campaignService.ts   # Hooks para campanhas
+│   │   │   └── dashboardService.ts  # Hooks para dashboard
 │   │   ├── utils/             # Funções utilitárias
-│   │   │   ├── format.ts      # Formatação (currency, number, percentage)
-│   │   │   ├── metrics.ts     # Cálculos de métricas (ROI, Margin, etc)
+│   │   │   ├── format.ts      # Formatação (currency, number, percentage, safeDivide)
+│   │   │   ├── metrics.ts     # Cálculos (ROI, Margin, ConversionRate)
 │   │   │   ├── sanitize.ts    # Sanitização HTML/XSS
-│   │   │   └── form-helpers.ts # Helpers para Zod + react-hook-form
+│   │   │   └── form-helpers.ts # Helpers para Zod
 │   │   └── validations/       # Schemas Zod
 │   │       └── schemas.ts     # Schemas de validação
-│   ├── types/                  # Tipos TypeScript centralizados
-│   └── __mocks__/              # Dados mockados organizados
-│       ├── affiliateMetrics.ts
-│       ├── campaigns.ts
-│       └── dashboard.ts
+│   ├── types/                  # Tipos TypeScript
+│   │   ├── affiliate.ts       # Tipos de afiliados
+│   │   ├── campaign.ts         # Tipos de campanhas
+│   │   ├── player.ts           # Tipos de jogadores
+│   │   ├── common.ts           # Tipos comuns
+│   │   └── ...
+│   └── __mocks__/              # Dados mockados
+│       ├── affiliateMetrics.ts # Mock de métricas de afiliados
+│       ├── campaigns.ts        # Mock de campanhas
+│       └── dashboard.ts        # Mock do dashboard
 ├── public/                     # Arquivos estáticos
+├── .eslintrc.js               # Configuração ESLint
+├── next.config.mjs            # Configuração Next.js
+├── tailwind.config.ts          # Configuração Tailwind
 └── package.json
 ```
 
@@ -206,66 +229,6 @@ Configurado com regras de qualidade:
    - Exemplo disponível em `src/lib/validations/schemas.ts`
    - Helper em `src/lib/utils/form-helpers.ts`
 
-## 📁 Estrutura Detalhada
-
-```
-src/
-├── app/                    # Páginas Next.js
-│   ├── page.tsx           # Dashboard principal (usa dashboardService)
-│   ├── affiliates/        # Página de afiliados (refatorada)
-│   ├── campaigns/         # Página de campanhas (refatorada)
-│   ├── players/           # Página de jogadores
-│   ├── analytics/         # Página de análises
-│   ├── settings/          # Página de configurações
-│   ├── layout.tsx         # Layout principal
-│   └── providers.tsx      # Providers (React Query)
-├── components/             # Componentes React
-│   ├── dashboard/         # Componentes do dashboard
-│   │   ├── AffiliateMetricsTable.tsx  # Otimizado com hooks
-│   │   ├── CampaignTable.tsx          # Otimizado com hooks
-│   │   ├── KpiCard.tsx                # Aceita valores numéricos
-│   │   └── ...
-│   ├── layout/            # Componentes de layout
-│   │   ├── AppSidebar.tsx
-│   │   └── DashboardHeader.tsx
-│   └── ui/                # Componentes shadcn/ui
-│       ├── sidebar.tsx    # Componente principal (refatorado)
-│       ├── sidebar-context.tsx
-│       ├── sidebar-menu.tsx
-│       ├── sidebar-parts.tsx
-│       └── sidebar-group.tsx
-├── hooks/                  # Hooks customizados
-│   ├── useTableSort.ts    # Ordenação de tabelas
-│   ├── useDebounce.ts     # Debounce de valores
-│   └── useDateRange.ts    # Seleção de intervalo de datas
-├── lib/                    # Utilitários e configurações
-│   ├── api/               # Cliente HTTP
-│   │   ├── base.ts        # Cliente base e helpers
-│   │   └── endpoints.ts   # Endpoints centralizados
-│   ├── constants/         # Constantes
-│   │   └── status.ts      # Status colors e labels
-│   ├── services/          # Serviços de API
-│   │   ├── affiliateService.ts  # Hooks para afiliados (com totais)
-│   │   ├── campaignService.ts   # Hooks para campanhas
-│   │   └── dashboardService.ts  # Hooks para dashboard
-│   ├── utils/             # Funções utilitárias
-│   │   ├── format.ts      # Formatação (currency, number, percentage, safeDivide)
-│   │   ├── metrics.ts     # Cálculos (ROI, Margin, ConversionRate)
-│   │   ├── sanitize.ts    # Sanitização HTML/XSS
-│   │   └── form-helpers.ts # Helpers para Zod
-│   └── validations/       # Schemas Zod
-│       └── schemas.ts     # Schemas de validação
-├── types/                  # Tipos TypeScript
-│   ├── affiliate.ts       # Tipos de afiliados
-│   ├── campaign.ts        # Tipos de campanhas
-│   ├── player.ts          # Tipos de jogadores
-│   ├── common.ts          # Tipos comuns
-│   └── ...
-└── __mocks__/              # Dados mockados
-    ├── affiliateMetrics.ts # Mock de métricas de afiliados
-    ├── campaigns.ts        # Mock de campanhas
-    └── dashboard.ts        # Mock do dashboard
-```
 
 ## 🔧 Configuração
 
