@@ -74,11 +74,14 @@ export const settingsFormSchema = z.object({
   emailNotifications: z.boolean().optional(),
 });
 
-// Exportar tipos inferidos dos schemas
+// Exportar tipos inferidos dos schemas (para uso em src/types/)
 export type AffiliateFiltersInput = z.infer<typeof affiliateFiltersSchema>;
 export type CampaignFiltersInput = z.infer<typeof campaignFiltersSchema>;
 export type CampaignFormInput = z.infer<typeof campaignFormSchema>;
 export type UserFormInput = z.infer<typeof userFormSchema>;
 export type PlayerFiltersInput = z.infer<typeof playerFiltersSchema>;
 export type SettingsFormInput = z.infer<typeof settingsFormSchema>;
+
+// Exportar tipos principais (se necessário criar schemas completos no futuro)
+// Por enquanto, os tipos estão em src/types/ e os schemas são apenas para validação de formulários
 

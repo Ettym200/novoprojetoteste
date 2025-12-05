@@ -1,8 +1,7 @@
 // Serviço para dados do dashboard principal
 
 import { useQuery } from '@tanstack/react-query';
-// import { apiGet } from '@/lib/api/base'; // TODO: Descomentar quando API estiver pronta
-// import { ENDPOINTS } from '@/lib/api/endpoints'; // TODO: Descomentar quando API estiver pronta
+import { api } from '@/lib/api/client';
 import {
   mockFunnelStages,
   mockRevenueData,
@@ -30,11 +29,10 @@ export function useDashboardKPIs() {
   return useQuery<DashboardKPIs>({
     queryKey: dashboardKeys.kpis(),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<DashboardKPIs>(ENDPOINTS.ANALYTICS.BASE + '/kpis');
-      // return response.data;
-      return mockDashboardKPIs;
+      const response = await api.get<DashboardKPIs>('/dashboard/kpis');
+      return response.data;
     },
+    placeholderData: mockDashboardKPIs,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 }
@@ -47,11 +45,10 @@ export function useFunnelStages() {
   return useQuery<FunnelStage[]>({
     queryKey: dashboardKeys.funnel(),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<FunnelStage[]>(ENDPOINTS.ANALYTICS.BASE + '/funnel');
-      // return response.data;
-      return mockFunnelStages;
+      const response = await api.get<FunnelStage[]>('/dashboard/funnel');
+      return response.data;
     },
+    placeholderData: mockFunnelStages,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -64,11 +61,10 @@ export function useRevenueData() {
   return useQuery<RevenueData[]>({
     queryKey: dashboardKeys.revenue(),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<RevenueData[]>(ENDPOINTS.ANALYTICS.BASE + '/revenue');
-      // return response.data;
-      return mockRevenueData;
+      const response = await api.get<RevenueData[]>('/dashboard/revenue');
+      return response.data;
     },
+    placeholderData: mockRevenueData,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -81,11 +77,10 @@ export function useInsights() {
   return useQuery<Insight[]>({
     queryKey: dashboardKeys.insights(),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<Insight[]>(ENDPOINTS.ANALYTICS.BASE + '/insights');
-      // return response.data;
-      return mockInsights;
+      const response = await api.get<Insight[]>('/dashboard/insights');
+      return response.data;
     },
+    placeholderData: mockInsights,
     staleTime: 1000 * 60 * 5,
   });
 }

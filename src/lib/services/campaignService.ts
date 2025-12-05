@@ -2,6 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { Campaign, CampaignFilters } from '@/types/campaign';
+import { api } from '@/lib/api/client';
+import { ENDPOINTS } from '@/lib/api/endpoints';
 import { mockCampaigns, mockCampaignTrendData } from '@/__mocks__/campaigns';
 
 // Query keys para React Query
@@ -22,13 +24,10 @@ export function useCampaigns(filters?: CampaignFilters) {
   return useQuery<Campaign[]>({
     queryKey: campaignKeys.list(filters),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<Campaign[]>(ENDPOINTS.CAMPAIGNS.BASE);
-      // return response.data;
+      const response = await api.get<Campaign[]>(ENDPOINTS.CAMPAIGNS.LIST);
+      let data = response.data;
       
-      // Mock temporário
-      let data = [...mockCampaigns];
-      
+      // Aplicar filtros localmente (ou no backend)
       if (filters?.search) {
         const search = filters.search.toLowerCase();
         data = data.filter(c => c.name.toLowerCase().includes(search));
@@ -40,6 +39,7 @@ export function useCampaigns(filters?: CampaignFilters) {
       
       return data;
     },
+    placeholderData: mockCampaigns,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 }
@@ -52,12 +52,10 @@ export function useCampaign(id: string) {
   return useQuery<Campaign | undefined>({
     queryKey: campaignKeys.detail(id),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<Campaign>(ENDPOINTS.CAMPAIGNS.DETAIL(id));
-      // return response.data;
-      
-      return mockCampaigns.find(c => c.id === id);
+      const response = await api.get<Campaign>(ENDPOINTS.CAMPAIGNS.DETAIL(id));
+      return response.data;
     },
+    placeholderData: mockCampaigns.find(c => c.id === id),
     enabled: !!id,
   });
 }
@@ -70,12 +68,10 @@ export function useCampaignTrends() {
   return useQuery({
     queryKey: campaignKeys.trends(),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet(ENDPOINTS.CAMPAIGNS.TRENDS);
-      // return response.data;
-      
-      return mockCampaignTrendData;
+      const response = await api.get(ENDPOINTS.CAMPAIGNS.LIST + '/trends');
+      return response.data;
     },
+    placeholderData: mockCampaignTrendData,
     staleTime: 1000 * 60 * 5,
   });
 }

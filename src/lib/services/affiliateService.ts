@@ -1,9 +1,11 @@
 // Serviço de Afiliados - Preparado para integração com API
 
 import { useQuery } from '@tanstack/react-query';
-import type { AffiliateFilters } from '@/types/affiliate';
+import type { AffiliateFilters, Affiliate, AffiliateMetrics } from '@/types/affiliate';
+import { api } from '@/lib/api/client';
+import { ENDPOINTS } from '@/lib/api/endpoints';
 
-// Mock data - será substituído quando API estiver pronta
+// Mock data - usado como placeholderData
 import { mockAffiliates } from '@/__mocks__/affiliates';
 import { mockAffiliateMetrics } from '@/__mocks__/affiliateMetrics';
 
@@ -25,13 +27,10 @@ export function useAffiliates(filters?: AffiliateFilters) {
   return useQuery({
     queryKey: affiliateKeys.list(filters),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<Affiliate[]>(ENDPOINTS.AFFILIATES.LIST);
-      // return response.data;
+      const response = await api.get<Affiliate[]>(ENDPOINTS.AFFILIATES.LIST);
+      let data = response.data;
       
-      // Mock temporário
-      let data = [...mockAffiliates];
-      
+      // Aplicar filtros localmente (ou no backend)
       if (filters?.search) {
         const search = filters.search.toLowerCase();
         data = data.filter(
@@ -42,6 +41,7 @@ export function useAffiliates(filters?: AffiliateFilters) {
       
       return data;
     },
+    placeholderData: mockAffiliates,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 }
@@ -66,26 +66,22 @@ export interface AffiliateMetricsWithTotals {
  * TODO: Substituir mock por chamada real quando API estiver pronta
  */
 export function useAffiliateMetrics() {
+  const mockTotals = {
+    totalAffiliates: mockAffiliateMetrics.length,
+    topPerformers: mockAffiliateMetrics.filter((a) => a.ranking && a.ranking <= 3).length,
+    totalGgr: mockAffiliateMetrics.reduce((sum, a) => sum + a.ggr, 0),
+    totalNgr: mockAffiliateMetrics.reduce((sum, a) => sum + a.ngr, 0),
+    totalNetProfit: mockAffiliateMetrics.reduce((sum, a) => sum + a.netProfit, 0),
+    totalFtds: mockAffiliateMetrics.reduce((sum, a) => sum + a.ftdCount, 0),
+  };
+
   return useQuery<AffiliateMetricsWithTotals>({
     queryKey: affiliateKeys.metrics(),
     queryFn: async () => {
-      // TODO: Descomentar quando API estiver pronta
-      // const response = await apiGet<AffiliateMetrics[]>(ENDPOINTS.AFFILIATES.METRICS);
-      // const affiliates = response.data;
-      // 
-      // // Calcular totais no backend ou aqui
-      // const totals = {
-      //   totalAffiliates: affiliates.length,
-      //   topPerformers: affiliates.filter((a) => a.ranking && a.ranking <= 3).length,
-      //   totalGgr: affiliates.reduce((sum, a) => sum + a.ggr, 0),
-      //   totalNgr: affiliates.reduce((sum, a) => sum + a.ngr, 0),
-      //   totalNetProfit: affiliates.reduce((sum, a) => sum + a.netProfit, 0),
-      //   totalFtds: affiliates.reduce((sum, a) => sum + a.ftdCount, 0),
-      // };
-      // return { affiliates, totals };
+      const response = await api.get<AffiliateMetrics[]>(ENDPOINTS.AFFILIATES.METRICS);
+      const affiliates = response.data;
       
-      // Mock temporário - calcular totais
-      const affiliates = mockAffiliateMetrics;
+      // Calcular totais (ou vir do backend)
       const totals = {
         totalAffiliates: affiliates.length,
         topPerformers: affiliates.filter((a) => a.ranking && a.ranking <= 3).length,
@@ -96,6 +92,7 @@ export function useAffiliateMetrics() {
       };
       return { affiliates, totals };
     },
+    placeholderData: { affiliates: mockAffiliateMetrics, totals: mockTotals },
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -107,12 +104,10 @@ export function useAffiliate(id: string) {
   return useQuery({
     queryKey: affiliateKeys.detail(id),
     queryFn: async () => {
-      // TODO: Substituir por chamada real
-      // const response = await apiGet<Affiliate>(ENDPOINTS.AFFILIATES.DETAIL(id));
-      // return response.data;
-      
-      return mockAffiliates.find(a => a.id === id);
+      const response = await api.get<Affiliate>(ENDPOINTS.AFFILIATES.DETAIL(id));
+      return response.data;
     },
+    placeholderData: mockAffiliates.find(a => a.id === id),
     enabled: !!id,
   });
 }

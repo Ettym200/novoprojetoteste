@@ -234,12 +234,18 @@ Configurado com regras de qualidade:
 
 ### Variáveis de Ambiente
 
-Criar arquivo `.env.local`:
+Criar arquivo `.env.local` baseado em `.env.example`:
 
 ```env
+# Modo Mock: true = usa mocks (padrão), false = usa API real
+NEXT_PUBLIC_API_MOCK=true
+
+# URL da API (usado quando API_MOCK=false)
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
-NEXT_PUBLIC_APP_ENV=development
 ```
+
+**Modo Mock** (padrão): `NEXT_PUBLIC_API_MOCK=true` - Usa dados mockados com delay e simulação de erros.  
+**Backend Real**: `NEXT_PUBLIC_API_MOCK=false` + configure `NEXT_PUBLIC_API_URL` com a URL do seu backend.
 
 ### ESLint
 
