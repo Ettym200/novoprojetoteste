@@ -76,12 +76,10 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+  // Gerar CSS de forma segura (conteúdo estático e controlado)
+  const cssContent = Object.entries(THEMES)
+    .map(
+      ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -93,8 +91,16 @@ ${colorConfig
   .join("\n")}
 }
 `
-          )
-          .join("\n"),
+    )
+    .join("\n");
+
+  // Nota: dangerouslySetInnerHTML é usado aqui apenas para CSS estático gerado
+  // O conteúdo é controlado e não vem de entrada do usuário
+  // Em produção, considere usar uma biblioteca como DOMPurify para sanitização adicional
+  return (
+    <style
+      dangerouslySetInnerHTML={{
+        __html: cssContent,
       }}
     />
   )

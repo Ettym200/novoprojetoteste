@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import AffiliateMetricsTable from "@/components/dashboard/AffiliateMetricsTable";
 import type { AffiliateMetrics } from "@/types/affiliate";
 import KpiCard from "@/components/dashboard/KpiCard";
@@ -25,18 +25,16 @@ import { ErrorMessage } from "@/components/ui/error-message";
 export default function Affiliates() {
   const [selectedAffiliate, setSelectedAffiliate] = useState<AffiliateMetrics | null>(null);
   
-  const { data: affiliates = [], isLoading, isError } = useAffiliateMetrics();
-
-  const { totalAffiliates, topPerformers, totalGgr, totalNgr, totalNetProfit, totalFtds } = useMemo(() => {
-    return {
-      totalAffiliates: affiliates.length,
-      topPerformers: affiliates.filter((a) => a.ranking && a.ranking <= 3).length,
-      totalGgr: affiliates.reduce((sum, a) => sum + a.ggr, 0),
-      totalNgr: affiliates.reduce((sum, a) => sum + a.ngr, 0),
-      totalNetProfit: affiliates.reduce((sum, a) => sum + a.netProfit, 0),
-      totalFtds: affiliates.reduce((sum, a) => sum + a.ftdCount, 0),
-    };
-  }, [affiliates]);
+  const { data, isLoading, isError } = useAffiliateMetrics();
+  const affiliates = data?.affiliates ?? [];
+  const totals = data?.totals ?? {
+    totalAffiliates: 0,
+    topPerformers: 0,
+    totalGgr: 0,
+    totalNgr: 0,
+    totalNetProfit: 0,
+    totalFtds: 0,
+  };
 
   if (isLoading) {
     return (
@@ -76,42 +74,48 @@ export default function Affiliates() {
       <div className="flex-1 overflow-auto p-6 space-y-6">
         <section>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <KpiCard
-              title="Total de Afiliados"
-              value={totalAffiliates.toString()}
-              icon={<Users className="w-5 h-5 text-primary" />}
-              iconBgClass="bg-primary/10"
-            />
-            <KpiCard
-              title="Top Performers"
-              value={topPerformers.toString()}
-              icon={<Trophy className="w-5 h-5 text-amber-500" />}
-              iconBgClass="bg-amber-500/10"
-            />
-            <KpiCard
-              title="Total FTDs"
-              value={totalFtds.toString()}
-              icon={<Target className="w-5 h-5 text-emerald-500" />}
-              iconBgClass="bg-emerald-500/10"
-            />
-            <KpiCard
-              title="GGR Total"
-              value={formatCurrency(totalGgr)}
-              icon={<DollarSign className="w-5 h-5 text-blue-500" />}
-              iconBgClass="bg-blue-500/10"
-            />
-            <KpiCard
-              title="NGR Total"
-              value={formatCurrency(totalNgr)}
-              icon={<BarChart3 className="w-5 h-5 text-purple-500" />}
-              iconBgClass="bg-purple-500/10"
-            />
-            <KpiCard
-              title="Lucro Líquido"
-              value={formatCurrency(totalNetProfit)}
-              icon={<TrendingDown className="w-5 h-5 text-cyan-500" />}
-              iconBgClass="bg-cyan-500/10"
-            />
+                <KpiCard
+                  title="Total de Afiliados"
+                  value={totals.totalAffiliates}
+                  format="number"
+                  icon={<Users className="w-5 h-5 text-primary" />}
+                  iconBgClass="bg-primary/10"
+                />
+                <KpiCard
+                  title="Top Performers"
+                  value={totals.topPerformers}
+                  format="number"
+                  icon={<Trophy className="w-5 h-5 text-amber-500" />}
+                  iconBgClass="bg-amber-500/10"
+                />
+                <KpiCard
+                  title="Total FTDs"
+                  value={totals.totalFtds}
+                  format="number"
+                  icon={<Target className="w-5 h-5 text-emerald-500" />}
+                  iconBgClass="bg-emerald-500/10"
+                />
+                <KpiCard
+                  title="GGR Total"
+                  value={totals.totalGgr}
+                  format="currency"
+                  icon={<DollarSign className="w-5 h-5 text-blue-500" />}
+                  iconBgClass="bg-blue-500/10"
+                />
+                <KpiCard
+                  title="NGR Total"
+                  value={totals.totalNgr}
+                  format="currency"
+                  icon={<BarChart3 className="w-5 h-5 text-purple-500" />}
+                  iconBgClass="bg-purple-500/10"
+                />
+                <KpiCard
+                  title="Lucro Líquido"
+                  value={totals.totalNetProfit}
+                  format="currency"
+                  icon={<TrendingDown className="w-5 h-5 text-cyan-500" />}
+                  iconBgClass="bg-cyan-500/10"
+                />
           </div>
         </section>
 

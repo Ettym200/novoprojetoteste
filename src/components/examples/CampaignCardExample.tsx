@@ -75,7 +75,9 @@ export default function CampaignCardExample() {
         <CampaignCard
           key={campaign.id}
           campaign={campaign}
-          onClick={(c) => console.log("Campaign clicked:", c.name)}
+          onClick={() => {
+            // Exemplo: ação ao clicar na campanha
+          }}
         />
       ))}
     </div>

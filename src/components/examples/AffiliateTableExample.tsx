@@ -88,7 +88,7 @@ export default function AffiliateTableExample() {
         affiliates={mockAffiliates}
         onViewDetails={(affiliate) => {
           setSelectedAffiliate(affiliate);
-          console.log("View affiliate details:", affiliate.name);
+          // Exemplo: ação ao visualizar detalhes do afiliado
         }}
       />
       <AffiliateDetailModal

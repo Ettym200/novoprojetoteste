@@ -47,19 +47,54 @@ export function useAffiliates(filters?: AffiliateFilters) {
 }
 
 /**
- * Hook para buscar métricas de afiliados
+ * Interface para retornar métricas com totais agregados
+ */
+export interface AffiliateMetricsWithTotals {
+  affiliates: AffiliateMetrics[];
+  totals: {
+    totalAffiliates: number;
+    topPerformers: number;
+    totalGgr: number;
+    totalNgr: number;
+    totalNetProfit: number;
+    totalFtds: number;
+  };
+}
+
+/**
+ * Hook para buscar métricas de afiliados com totais agregados
  * TODO: Substituir mock por chamada real quando API estiver pronta
  */
 export function useAffiliateMetrics() {
-  return useQuery({
+  return useQuery<AffiliateMetricsWithTotals>({
     queryKey: affiliateKeys.metrics(),
     queryFn: async () => {
       // TODO: Descomentar quando API estiver pronta
       // const response = await apiGet<AffiliateMetrics[]>(ENDPOINTS.AFFILIATES.METRICS);
-      // return response.data;
+      // const affiliates = response.data;
+      // 
+      // // Calcular totais no backend ou aqui
+      // const totals = {
+      //   totalAffiliates: affiliates.length,
+      //   topPerformers: affiliates.filter((a) => a.ranking && a.ranking <= 3).length,
+      //   totalGgr: affiliates.reduce((sum, a) => sum + a.ggr, 0),
+      //   totalNgr: affiliates.reduce((sum, a) => sum + a.ngr, 0),
+      //   totalNetProfit: affiliates.reduce((sum, a) => sum + a.netProfit, 0),
+      //   totalFtds: affiliates.reduce((sum, a) => sum + a.ftdCount, 0),
+      // };
+      // return { affiliates, totals };
       
-      // Mock temporário - usar dados completos de métricas
-      return mockAffiliateMetrics;
+      // Mock temporário - calcular totais
+      const affiliates = mockAffiliateMetrics;
+      const totals = {
+        totalAffiliates: affiliates.length,
+        topPerformers: affiliates.filter((a) => a.ranking && a.ranking <= 3).length,
+        totalGgr: affiliates.reduce((sum, a) => sum + a.ggr, 0),
+        totalNgr: affiliates.reduce((sum, a) => sum + a.ngr, 0),
+        totalNetProfit: affiliates.reduce((sum, a) => sum + a.netProfit, 0),
+        totalFtds: affiliates.reduce((sum, a) => sum + a.ftdCount, 0),
+      };
+      return { affiliates, totals };
     },
     staleTime: 1000 * 60 * 5,
   });

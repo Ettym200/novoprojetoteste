@@ -141,7 +141,9 @@ export default function Campaigns() {
           <CampaignTable
             campaigns={campaigns}
             onViewDetails={(campaign) => setSelectedCampaign(campaign)}
-            onNewCampaign={() => console.log("New campaign")}
+                onNewCampaign={() => {
+                  // TODO: Implementar criação de nova campanha
+                }}
           />
         </section>
 

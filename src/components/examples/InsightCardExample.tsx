@@ -49,7 +49,9 @@ export default function InsightCardExample() {
         <InsightCard
           key={insight.id}
           insight={insight}
-          onClick={(i) => console.log("Insight clicked:", i.title)}
+          onClick={() => {
+            // Exemplo: ação ao clicar no insight
+          }}
         />
       ))}
     </div>

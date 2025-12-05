@@ -92,7 +92,7 @@ export default function PlayerTableExample() {
         players={mockPlayers}
         onViewDetails={(player) => {
           setSelectedPlayer(player);
-          console.log("View player details:", player.name);
+          // Exemplo: ação ao visualizar detalhes do jogador
         }}
       />
       <PlayerDetailModal

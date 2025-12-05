@@ -4,7 +4,7 @@ import { useState } from "react";
 import KpiCard from "@/components/dashboard/KpiCard";
 import FunnelSankey from "@/components/dashboard/FunnelSankey";
 import MetricChart from "@/components/dashboard/MetricChart";
-import InsightCard, { type Insight } from "@/components/dashboard/InsightCard";
+import InsightCard from "@/components/dashboard/InsightCard";
 import DashboardHeader from "@/components/layout/DashboardHeader";
 import { Card } from "@/components/ui/card";
 import {
@@ -19,71 +19,58 @@ import {
   Clock,
   AlertTriangle,
 } from "lucide-react";
-
-// todo: remove mock functionality
-const funnelStages = [
-  { id: "1", name: "Facebook", value: 25500, color: "#1877F2" },
-  { id: "2", name: "Página", value: 17850, color: "#6366F1" },
-  { id: "3", name: "WhatsApp", value: 10500, color: "#25D366" },
-  { id: "4", name: "Corretora", value: 4200, color: "#F59E0B" },
-  { id: "5", name: "Cadastro", value: 378, color: "#8B5CF6" },
-  { id: "6", name: "FTD", value: 79, color: "#10B981" },
-  { id: "7", name: "Redepósito", value: 35, color: "#06B6D4" },
-];
-
-// todo: remove mock functionality
-const revenueData = [
-  { name: "01/11", deposits: 12500, withdrawals: 3200, ggr: 9300 },
-  { name: "05/11", deposits: 15800, withdrawals: 4100, ggr: 11700 },
-  { name: "10/11", deposits: 18200, withdrawals: 5500, ggr: 12700 },
-  { name: "15/11", deposits: 14300, withdrawals: 3800, ggr: 10500 },
-  { name: "20/11", deposits: 22100, withdrawals: 6200, ggr: 15900 },
-  { name: "25/11", deposits: 19500, withdrawals: 4800, ggr: 14700 },
-  { name: "27/11", deposits: 14722, withdrawals: 2077, ggr: 12645 },
-];
-
-// todo: remove mock functionality
-const insights: Insight[] = [
-  {
-    id: "1",
-    type: "danger",
-    title: "Queda abrupta no ROI",
-    description: "O ROI geral caiu 45% em comparação com o período anterior.",
-    metric: "ROI Atual",
-    metricValue: "-15.3%",
-  },
-  {
-    id: "2",
-    type: "warning",
-    title: "Alta taxa de churn no WhatsApp",
-    description: "32% dos jogadores abandonaram na etapa de WhatsApp.",
-    metric: "Taxa de Churn",
-    metricValue: "32%",
-  },
-  {
-    id: "3",
-    type: "success",
-    title: "Cordeiro atingiu meta",
-    description: "Afiliado atingiu 150% da meta mensal.",
-    metric: "Meta",
-    metricValue: "150%",
-  },
-  {
-    id: "4",
-    type: "tip",
-    title: "Oportunidade de remarketing",
-    description: "Campanhas de remarketing convertem 3x mais.",
-  },
-];
+import { useDashboardKPIs, useFunnelStages, useRevenueData, useInsights } from "@/lib/services/dashboardService";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ErrorMessage } from "@/components/ui/error-message";
 
 export default function DashboardGeral() {
   const [, setRefreshing] = useState(false);
 
+  const { data: kpis, isLoading: isLoadingKPIs, isError: isErrorKPIs } = useDashboardKPIs();
+  const { data: funnelStages = [], isLoading: isLoadingFunnel } = useFunnelStages();
+  const { data: revenueData = [], isLoading: isLoadingRevenue } = useRevenueData();
+  const { data: insights = [], isLoading: isLoadingInsights } = useInsights();
+
+  const isLoading = isLoadingKPIs || isLoadingFunnel || isLoadingRevenue || isLoadingInsights;
+  const isError = isErrorKPIs;
+
   const handleRefresh = () => {
     setRefreshing(true);
-    console.log("Refreshing dashboard data...");
+    // TODO: Implementar refresh real quando API estiver pronta
     setTimeout(() => setRefreshing(false), 1000);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col h-full">
+        <DashboardHeader
+          title="Dashboard Geral"
+          subtitle="Visão executiva da operação"
+          onRefresh={handleRefresh}
+          showSearch
+        />
+        <div className="flex-1 flex items-center justify-center">
+          <LoadingSpinner size="lg" />
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !kpis) {
+    return (
+      <div className="flex flex-col h-full">
+        <DashboardHeader
+          title="Dashboard Geral"
+          subtitle="Visão executiva da operação"
+          onRefresh={handleRefresh}
+          showSearch
+        />
+        <div className="flex-1 flex items-center justify-center">
+          <ErrorMessage message="Erro ao carregar dados do dashboard" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -100,28 +87,32 @@ export default function DashboardGeral() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <KpiCard
               title="Total Investido"
-              value="R$ 9.240,61"
+              value={kpis.totalInvested}
+              format="currency"
               change={-56.48}
               icon={<DollarSign className="w-5 h-5 text-primary" />}
               iconBgClass="bg-primary/10"
             />
             <KpiCard
               title="Total de FTD"
-              value="R$ 9.359,64"
+              value={kpis.totalFtd}
+              format="currency"
               change={-81.84}
               icon={<Target className="w-5 h-5 text-emerald-500" />}
               iconBgClass="bg-emerald-500/10"
             />
             <KpiCard
               title="Total de Depósitos"
-              value="R$ 14.722,95"
+              value={kpis.totalDeposits}
+              format="currency"
               change={-82.89}
               icon={<ArrowDownCircle className="w-5 h-5 text-blue-500" />}
               iconBgClass="bg-blue-500/10"
             />
             <KpiCard
               title="Total de Saques"
-              value="R$ 2.077,01"
+              value={kpis.totalWithdrawals}
+              format="currency"
               change={-97.19}
               icon={<Wallet className="w-5 h-5 text-amber-500" />}
               iconBgClass="bg-amber-500/10"
@@ -133,28 +124,32 @@ export default function DashboardGeral() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <KpiCard
               title="GGR"
-              value="R$ 12.645,94"
+              value={kpis.ggr}
+              format="currency"
               change={256.82}
               icon={<TrendingUp className="w-5 h-5 text-emerald-500" />}
               iconBgClass="bg-emerald-500/10"
             />
             <KpiCard
               title="NGR"
-              value="R$ 10.413,05"
+              value={kpis.ngr}
+              format="currency"
               change={-199.57}
               icon={<BarChart3 className="w-5 h-5 text-purple-500" />}
               iconBgClass="bg-purple-500/10"
             />
             <KpiCard
               title="Lucro Líquido"
-              value="R$ 1.172,44"
+              value={kpis.netProfit}
+              format="currency"
               change={-103.70}
               icon={<PiggyBank className="w-5 h-5 text-cyan-500" />}
               iconBgClass="bg-cyan-500/10"
             />
             <KpiCard
               title="ROI de FTD"
-              value="0,01%"
+              value={kpis.roiFtd}
+              format="percentage"
               change={-99.09}
               icon={<Users className="w-5 h-5 text-rose-500" />}
               iconBgClass="bg-rose-500/10"
@@ -167,28 +162,32 @@ export default function DashboardGeral() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <KpiCard
               title="Custo por Lead WhatsApp"
-              value="R$ 13,68"
+              value={kpis.costPerWhatsAppLead}
+              format="currency"
               change={-30.62}
               icon={<Clock className="w-5 h-5 text-green-500" />}
               iconBgClass="bg-green-500/10"
             />
             <KpiCard
               title="Custo por Cadastro"
-              value="R$ 28,37"
+              value={kpis.costPerRegistration}
+              format="currency"
               change={-23.53}
               icon={<Users className="w-5 h-5 text-blue-500" />}
               iconBgClass="bg-blue-500/10"
             />
             <KpiCard
               title="Custo por Depósito"
-              value="R$ 101,68"
+              value={kpis.costPerDeposit}
+              format="currency"
               change={-3.97}
               icon={<DollarSign className="w-5 h-5 text-amber-500" />}
               iconBgClass="bg-amber-500/10"
             />
             <KpiCard
               title="Custo por FTD"
-              value="R$ 121,09"
+              value={kpis.costPerFtd}
+              format="currency"
               change={-26.83}
               icon={<Target className="w-5 h-5 text-red-500" />}
               iconBgClass="bg-red-500/10"
@@ -221,7 +220,9 @@ export default function DashboardGeral() {
                 <InsightCard
                   key={insight.id}
                   insight={insight}
-                  onClick={(i) => console.log("Insight clicked:", i.title)}
+                  onClick={() => {
+                    // TODO: Implementar ação quando insight for clicado
+                  }}
                 />
               ))}
             </div>
