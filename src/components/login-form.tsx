@@ -2,12 +2,15 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { signIn } from "@/lib/services/authService"
 import { AlertCircle } from "lucide-react"
+import { loginSchema, type LoginInput } from "@/lib/validations/schemas"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 export function LoginForm({
   className,
@@ -16,24 +19,26 @@ export function LoginForm({
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const onSubmit = async (data: LoginInput) => {
     setError(null)
     setIsLoading(true)
 
     try {
-      // Validar campos
-      if (!email || !password) {
-        setError("Por favor, preencha todos os campos")
-        setIsLoading(false)
-        return
-      }
-
       // Chamar API de autenticação
-      const response = await signIn({ email, password })
+      const response = await signIn({ email: data.email, password: data.password })
 
       // Verificar se login foi bem-sucedido
       if (response.token || response.user) {
@@ -52,7 +57,7 @@ export function LoginForm({
   }
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit} {...props}>
+    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -72,11 +77,13 @@ export function LoginForm({
             id="email" 
             type="email" 
             placeholder="m@example.com" 
-            required 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email")}
             disabled={isLoading}
+            aria-invalid={errors.email ? "true" : "false"}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
@@ -91,11 +98,13 @@ export function LoginForm({
           <Input 
             id="password" 
             type="password" 
-            required 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password")}
             disabled={isLoading}
+            aria-invalid={errors.password ? "true" : "false"}
           />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
         </div>
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
