@@ -24,11 +24,23 @@ import { CAMPAIGN_STATUS_COLORS, CAMPAIGN_STATUS_LABELS } from "@/lib/constants"
 import { calculateConversionRate } from "@/lib/utils/metrics";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ErrorMessage } from "@/components/ui/error-message";
+import { format } from "date-fns";
 
 export default function Campaigns() {
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   
-  const { data: campaigns = [], isLoading, isError } = useCampaigns();
+  // Estado para o range de datas selecionado
+  const today = new Date();
+  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
+    from: today,
+    to: today,
+  });
+
+  // Converter datas para formato YYYY-MM-DD
+  const startDate = useMemo(() => format(dateRange.from, 'yyyy-MM-dd'), [dateRange.from]);
+  const endDate = useMemo(() => format(dateRange.to, 'yyyy-MM-dd'), [dateRange.to]);
+  
+  const { data: campaigns = [], isLoading, isError } = useCampaigns(undefined, startDate, endDate);
   const { data: campaignTrendData = [] } = useCampaignTrends();
 
   const { totalImpressions, totalSpend, totalFtds, avgCtr, avgCostPerFtd, activeCampaigns } = useMemo(() => {
@@ -80,6 +92,8 @@ export default function Campaigns() {
       <DashboardHeader
         title="Campanhas"
         subtitle="Gestão e análise de campanhas de tráfego"
+        showDatePicker
+        onDateRangeChange={(range) => setDateRange(range)}
       />
 
       <div className="flex-1 overflow-auto p-6 space-y-6">

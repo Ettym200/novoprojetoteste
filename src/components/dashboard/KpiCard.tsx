@@ -36,25 +36,25 @@ export default function KpiCard({
     : value; // Se já for string, mantém como está (compatibilidade)
 
   return (
-    <Card className="p-5 hover-elevate" data-testid={`kpi-card-${title.toLowerCase().replace(/\s+/g, "-")}`}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <p className="text-sm text-muted-foreground truncate">{title}</p>
-          <p className="text-2xl font-bold mt-1 tabular-nums">{formattedValue}</p>
+    <Card className="p-3 md:p-5 hover-elevate" data-testid={`kpi-card-${title.toLowerCase().replace(/\s+/g, "-")}`}>
+      <div className="flex items-start justify-between gap-2 md:gap-3">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <p className="text-xs md:text-sm text-muted-foreground truncate">{title}</p>
+          <p className="text-lg md:text-2xl font-bold mt-1 tabular-nums break-words overflow-hidden">{formattedValue}</p>
           {change !== undefined && (
-            <div className="flex items-center gap-1.5 mt-2">
+            <div className="flex items-center gap-1 md:gap-1.5 mt-1.5 md:mt-2 flex-wrap">
               {isPositive && (
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
+                <TrendingUp className="w-3 h-3 md:w-3.5 md:h-3.5 text-emerald-500 shrink-0" />
               )}
               {isNegative && (
-                <TrendingDown className="w-3.5 h-3.5 text-red-500" />
+                <TrendingDown className="w-3 h-3 md:w-3.5 md:h-3.5 text-red-500 shrink-0" />
               )}
               {isNeutral && (
-                <Minus className="w-3.5 h-3.5 text-muted-foreground" />
+                <Minus className="w-3 h-3 md:w-3.5 md:h-3.5 text-muted-foreground shrink-0" />
               )}
               <span
                 className={cn(
-                  "text-xs font-medium tabular-nums",
+                  "text-[10px] md:text-xs font-medium tabular-nums whitespace-nowrap",
                   isPositive && "text-emerald-500",
                   isNegative && "text-red-500",
                   isNeutral && "text-muted-foreground"
@@ -64,7 +64,7 @@ export default function KpiCard({
                 {change.toFixed(2)}%
               </span>
               {changeLabel && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[10px] md:text-xs text-muted-foreground">
                   {changeLabel}
                 </span>
               )}
@@ -74,7 +74,7 @@ export default function KpiCard({
         {icon && (
           <div
             className={cn(
-              "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
+              "flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-lg shrink-0",
               iconBgClass
             )}
           >

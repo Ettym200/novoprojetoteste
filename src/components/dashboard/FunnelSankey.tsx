@@ -25,9 +25,9 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
   // Validar se stages existe e tem elementos
   if (!stages || stages.length === 0) {
     return (
-      <Card className="p-6" data-testid="funnel-sankey">
-        <h3 className="text-lg font-semibold mb-6">{title}</h3>
-        <div className="text-center text-muted-foreground py-8">
+      <Card className="p-3 md:p-6" data-testid="funnel-sankey">
+        <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-6">{title}</h3>
+        <div className="text-center text-muted-foreground py-6 md:py-8 text-sm md:text-base">
           Nenhum dado disponível
         </div>
       </Card>
@@ -46,9 +46,9 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
   };
 
   return (
-    <Card className="p-6" data-testid="funnel-sankey">
-      <h3 className="text-lg font-semibold mb-6">{title}</h3>
-      <div className="space-y-3">
+    <Card className="p-3 md:p-6" data-testid="funnel-sankey">
+      <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-6">{title}</h3>
+      <div className="space-y-2 md:space-y-3">
         {stages.map((stage, index) => {
           const widthPercentage = (stage.value / maxValue) * 100;
           const conversionRate = getConversionRate(index);
@@ -57,8 +57,8 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
           return (
             <div key={stage.id} className="relative">
               {index > 0 && (
-                <div className="absolute -top-2 left-0 right-0 flex items-center justify-center">
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="absolute -top-1 md:-top-2 left-0 right-0 flex items-center justify-center">
+                  <div className="flex items-center gap-1 md:gap-2 text-[10px] md:text-xs flex-wrap justify-center">
                     <span className="text-muted-foreground">
                       Conv: <span className="text-emerald-500 font-medium">{conversionRate.toFixed(1)}%</span>
                     </span>
@@ -68,23 +68,23 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
                   </div>
                 </div>
               )}
-              <div className="flex items-center gap-4 py-2">
-                <div className="w-32 text-sm font-medium truncate">{stage.name}</div>
-                <div className="flex-1 h-10 bg-muted/50 rounded-md overflow-hidden relative">
+              <div className="flex items-center gap-2 md:gap-4 py-2">
+                <div className="w-20 md:w-32 text-xs md:text-sm font-medium truncate">{stage.name}</div>
+                <div className="flex-1 h-8 md:h-10 bg-muted/50 rounded-md overflow-hidden relative">
                   <div
-                    className="h-full rounded-md transition-all duration-500 ease-out flex items-center justify-end pr-3"
+                    className="h-full rounded-md transition-all duration-500 ease-out flex items-center justify-end pr-1.5 md:pr-3"
                     style={{
                       width: `${widthPercentage}%`,
                       backgroundColor: stage.color,
                     }}
                   >
-                    <span className="text-sm font-semibold text-white drop-shadow-sm">
+                    <span className="text-[10px] md:text-sm font-semibold text-white drop-shadow-sm whitespace-nowrap">
                       {stage.value.toLocaleString("pt-BR")}
                     </span>
                   </div>
                 </div>
-                <div className="w-16 text-right">
-                  <span className="text-sm font-medium tabular-nums">
+                <div className="w-12 md:w-16 text-right">
+                  <span className="text-xs md:text-sm font-medium tabular-nums">
                     {stages[0] && stages[0].value > 0 
                       ? ((stage.value / stages[0].value) * 100).toFixed(1)
                       : '0.0'}%
@@ -96,8 +96,8 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
         })}
       </div>
       {stages.length > 0 && stages[0] && stages[stages.length - 1] && stages[0].value > 0 && (
-        <div className="mt-6 pt-4 border-t border-border">
-          <div className="flex items-center justify-between text-sm">
+        <div className="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-border">
+          <div className="flex items-center justify-between text-xs md:text-sm">
             <span className="text-muted-foreground">Taxa de conversão total</span>
             <span className="font-semibold text-emerald-500">
               {((stages[stages.length - 1].value / stages[0].value) * 100).toFixed(2)}%

@@ -108,10 +108,10 @@ export default function DashboardGeral() {
         onDateRangeChange={(range) => setDateRange(range)}
       />
 
-      <div className="flex-1 overflow-auto p-6 space-y-6">
+      <div className="flex-1 overflow-auto p-3 md:p-6 space-y-4 md:space-y-6">
         <section>
-          <h2 className="text-lg font-semibold mb-4">Financeiro Resumido</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <h2 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Financeiro Resumido</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             <KpiCard
               title="Total Investido"
               value={kpis?.totalInvested || 0}
@@ -148,7 +148,7 @@ export default function DashboardGeral() {
         </section>
 
         <section>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             <KpiCard
               title="GGR"
               value={kpis?.ggr || 0}
@@ -185,8 +185,8 @@ export default function DashboardGeral() {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold mb-4">Eficiência de Captação</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <h2 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Eficiência de Captação</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
             <KpiCard
               title="Custo por Lead WhatsApp"
               value={kpis?.costPerWhatsAppLead || 0}
