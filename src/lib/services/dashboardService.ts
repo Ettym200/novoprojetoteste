@@ -93,9 +93,9 @@ async function getAffiliateIds(): Promise<string[]> {
  * Hook para buscar KPIs do dashboard
  * Agrega dados de /metrics/gerais para calcular KPIs
  */
-export function useDashboardKPIs() {
+export function useDashboardKPIs(startDate?: string, endDate?: string) {
   return useQuery<DashboardKPIs>({
-    queryKey: dashboardKeys.kpis(),
+    queryKey: [...dashboardKeys.kpis(), startDate, endDate],
     queryFn: async () => {
       try {
         // Buscar IDs de afiliados baseado no role do usuário
@@ -119,17 +119,17 @@ export function useDashboardKPIs() {
           };
         }
         
-        // Calcular datas padrão (hoje)
+        // Usar datas fornecidas ou padrão (hoje)
         const today = new Date();
-        const startDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
-        const endDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const finalStartDate = startDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const finalEndDate = endDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
         
         // Buscar métricas gerais da API com os IDs dos afiliados e datas
         const response = await api.get<MetricsGeraisResponse>(ENDPOINTS.METRICS.GERAIS, {
           params: {
             affiliateId: affiliateIds,
-            startDate,
-            endDate,
+            startDate: finalStartDate,
+            endDate: finalEndDate,
           },
         });
         
@@ -255,9 +255,9 @@ export function useDashboardKPIs() {
  * Hook para buscar estágios do funil
  * Calcula funil a partir dos dados de métricas gerais
  */
-export function useFunnelStages() {
+export function useFunnelStages(startDate?: string, endDate?: string) {
   return useQuery<FunnelStage[]>({
-    queryKey: dashboardKeys.funnel(),
+    queryKey: [...dashboardKeys.funnel(), startDate, endDate],
     queryFn: async () => {
       try {
         // Buscar IDs de afiliados baseado no role do usuário
@@ -267,17 +267,17 @@ export function useFunnelStages() {
           return [];
         }
         
-        // Calcular datas padrão (hoje)
+        // Usar datas fornecidas ou padrão (hoje)
         const today = new Date();
-        const startDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
-        const endDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const finalStartDate = startDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const finalEndDate = endDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
         
         // Buscar métricas gerais com IDs dos afiliados e datas
         const response = await api.get<MetricsGeraisResponse>(ENDPOINTS.METRICS.GERAIS, {
           params: {
             affiliateId: affiliateIds,
-            startDate,
-            endDate,
+            startDate: finalStartDate,
+            endDate: finalEndDate,
           },
         });
         
@@ -365,9 +365,9 @@ export function useFunnelStages() {
  * Por enquanto retorna vazio pois não há endpoint específico para receita temporal
  * TODO: Quando houver endpoint com dados temporais (por dia/semana/mês), usar ele
  */
-export function useRevenueData() {
+export function useRevenueData(startDate?: string, endDate?: string) {
   return useQuery<RevenueData[]>({
-    queryKey: dashboardKeys.revenue(),
+    queryKey: [...dashboardKeys.revenue(), startDate, endDate],
     queryFn: async () => {
       try {
         // Buscar IDs de afiliados baseado no role do usuário
@@ -427,9 +427,9 @@ export function useRevenueData() {
  * Hook para buscar insights automáticos
  * Gera insights baseados nos dados de métricas gerais
  */
-export function useInsights() {
+export function useInsights(startDate?: string, endDate?: string) {
   return useQuery<Insight[]>({
-    queryKey: dashboardKeys.insights(),
+    queryKey: [...dashboardKeys.insights(), startDate, endDate],
     queryFn: async () => {
       try {
         // Buscar IDs de afiliados baseado no role do usuário

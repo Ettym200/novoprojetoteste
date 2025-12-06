@@ -20,6 +20,7 @@ interface DashboardHeaderProps {
   onRefresh?: () => void;
   showSearch?: boolean;
   showDatePicker?: boolean;
+  onDateRangeChange?: (range: { from: Date; to: Date }) => void;
 }
 
 export default function DashboardHeader({
@@ -28,6 +29,7 @@ export default function DashboardHeader({
   onRefresh,
   showSearch = false,
   showDatePicker = true,
+  onDateRangeChange,
 }: DashboardHeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -117,7 +119,7 @@ export default function DashboardHeader({
       
       {showDatePicker && (
         <div className="px-6 pb-3 border-t border-border/50">
-          <DateRangeSelector />
+          <DateRangeSelector onDateRangeChange={onDateRangeChange} />
         </div>
       )}
     </header>

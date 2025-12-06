@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import KpiCard from "@/components/dashboard/KpiCard";
 import FunnelSankey from "@/components/dashboard/FunnelSankey";
 import MetricChart from "@/components/dashboard/MetricChart";
@@ -22,14 +22,26 @@ import {
 import { useDashboardKPIs, useFunnelStages, useRevenueData, useInsights } from "@/lib/services/dashboardService";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ErrorMessage } from "@/components/ui/error-message";
+import { format } from "date-fns";
 
 export default function DashboardGeral() {
   const [, setRefreshing] = useState(false);
+  
+  // Estado para o range de datas selecionado
+  const today = new Date();
+  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
+    from: today,
+    to: today,
+  });
 
-  const { data: kpis, isLoading: isLoadingKPIs, isError: isErrorKPIs } = useDashboardKPIs();
-  const { data: funnelStages = [], isLoading: isLoadingFunnel } = useFunnelStages();
-  const { data: revenueData = [], isLoading: isLoadingRevenue } = useRevenueData();
-  const { data: insights = [], isLoading: isLoadingInsights } = useInsights();
+  // Converter datas para formato YYYY-MM-DD
+  const startDate = useMemo(() => format(dateRange.from, 'yyyy-MM-dd'), [dateRange.from]);
+  const endDate = useMemo(() => format(dateRange.to, 'yyyy-MM-dd'), [dateRange.to]);
+
+  const { data: kpis, isLoading: isLoadingKPIs, isError: isErrorKPIs } = useDashboardKPIs(startDate, endDate);
+  const { data: funnelStages = [], isLoading: isLoadingFunnel } = useFunnelStages(startDate, endDate);
+  const { data: revenueData = [], isLoading: isLoadingRevenue } = useRevenueData(startDate, endDate);
+  const { data: insights = [], isLoading: isLoadingInsights } = useInsights(startDate, endDate);
 
   const isLoading = isLoadingKPIs || isLoadingFunnel || isLoadingRevenue || isLoadingInsights;
   const isError = isErrorKPIs;
@@ -92,6 +104,8 @@ export default function DashboardGeral() {
         subtitle="Visão executiva da operação"
         onRefresh={handleRefresh}
         showSearch
+        showDatePicker
+        onDateRangeChange={(range) => setDateRange(range)}
       />
 
       <div className="flex-1 overflow-auto p-6 space-y-6">
