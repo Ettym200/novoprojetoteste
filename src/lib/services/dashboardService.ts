@@ -78,16 +78,11 @@ async function getAffiliateIds(): Promise<string[]> {
   
     // Filtrar IDs válidos (strings não vazias e alfanuméricas)
     // Nota: alguns IDs podem ter menos de 10 caracteres (ex: "FELIPE")
-    const validIds = affiliateIds.filter(id => 
+    return affiliateIds.filter(id => 
       typeof id === 'string' && 
       id.length > 0 && 
       /^[A-Za-z0-9]+$/.test(id)
     );
-    
-    console.log('[getAffiliateIds] User role:', userRole);
-    console.log('[getAffiliateIds] Found affiliate IDs:', validIds);
-    
-    return validIds;
   } catch (error) {
     console.warn('Erro ao buscar IDs de afiliados:', error);
     return [];
@@ -129,12 +124,6 @@ export function useDashboardKPIs() {
         const startDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
         const endDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
         
-        console.log('[useDashboardKPIs] Buscando métricas com:', {
-          affiliateIds,
-          startDate,
-          endDate,
-        });
-        
         // Buscar métricas gerais da API com os IDs dos afiliados e datas
         const response = await api.get<MetricsGeraisResponse>(ENDPOINTS.METRICS.GERAIS, {
           params: {
@@ -142,11 +131,6 @@ export function useDashboardKPIs() {
             startDate,
             endDate,
           },
-        });
-        
-        console.log('[useDashboardKPIs] Resposta da API:', {
-          success: response.data.success,
-          dataLength: response.data.data?.length || 0,
         });
         
         // Verificar se a resposta indica erro
