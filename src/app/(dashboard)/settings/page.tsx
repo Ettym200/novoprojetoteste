@@ -51,7 +51,7 @@ export default function Settings() {
   const { toast } = useToast();
   const [addUserOpen, setAddUserOpen] = useState(false);
   const [editUserOpen, setEditUserOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
+  const [, setSelectedUser] = useState<typeof mockUsers[0] | null>(null);
   const [editForm, setEditForm] = useState({ name: "", email: "", role: "" });
 
 

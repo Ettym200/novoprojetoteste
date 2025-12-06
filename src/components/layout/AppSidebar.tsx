@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Sidebar,
   SidebarContent,
@@ -33,11 +34,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut } from "@/lib/services/authService";
 
 const menuItems = [
   {
     title: "Dashboard Geral",
-    url: "/",
+    url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -77,11 +79,22 @@ interface AppSidebarProps {
 
 export default function AppSidebar({ userName = "Super Admin", userRole = "Administrador" }: AppSidebarProps) {
   const pathname = usePathname();
+  const queryClient = useQueryClient();
+
+  const handleSignOut = () => {
+    // Limpar cache do React Query antes de fazer logout
+    queryClient.clear();
+    queryClient.removeQueries();
+    queryClient.resetQueries();
+    
+    // Fazer logout
+    signOut();
+  };
 
   return (
     <Sidebar data-testid="app-sidebar">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <Link href="/">
+        <Link href="/dashboard">
           <div className="flex items-center gap-2 cursor-pointer" data-testid="logo-link">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">VB</span>
@@ -170,7 +183,11 @@ export default function AppSidebar({ userName = "Super Admin", userRole = "Admin
               Configurações
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" data-testid="menu-item-logout">
+            <DropdownMenuItem 
+              className="text-red-500" 
+              data-testid="menu-item-logout"
+              onClick={handleSignOut}
+            >
               <LogOut className="w-4 h-4 mr-2" />
               Sair
             </DropdownMenuItem>

@@ -21,7 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/format";
 import { safeDivide } from "@/lib/utils/format";
-import type { Affiliate } from "./AffiliateTable";
+import type { Affiliate } from "@/types/affiliate";
 
 interface AffiliateDetailModalProps {
   affiliate: Affiliate | null;

@@ -9,7 +9,8 @@ import type { ZodSchema } from 'zod';
  * @returns Resolver configurado para react-hook-form
  */
 export function createZodResolver<T extends ZodSchema>(schema: T) {
-  return zodResolver(schema);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return zodResolver(schema as any);
 }
 
 /**

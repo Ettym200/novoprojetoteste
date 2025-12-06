@@ -1,5 +1,7 @@
 // Tipos relacionados a Afiliados
 
+import type { FilterParams } from './common';
+
 export interface AffiliateMetrics {
   id: string;
   name: string;

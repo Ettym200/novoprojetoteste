@@ -219,10 +219,7 @@ Configurado com regras de qualidade:
    - Remover código de mock
    - Descomentar linhas com `// TODO:`
 
-2. **Configurar variáveis de ambiente**
-   - Criar `.env.local` com `NEXT_PUBLIC_API_URL`
-
-3. **Criar serviços adicionais**
+2. **Criar serviços adicionais**
    - `playerService.ts`, `analyticsService.ts`, `userService.ts`
 
 4. **Usar schemas Zod nos formulários**
@@ -232,20 +229,10 @@ Configurado com regras de qualidade:
 
 ## 🔧 Configuração
 
-### Variáveis de Ambiente
+### API
 
-Criar arquivo `.env.local` baseado em `.env.example`:
-
-```env
-# Modo Mock: true = usa mocks (padrão), false = usa API real
-NEXT_PUBLIC_API_MOCK=true
-
-# URL da API (usado quando API_MOCK=false)
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
-```
-
-**Modo Mock** (padrão): `NEXT_PUBLIC_API_MOCK=true` - Usa dados mockados com delay e simulação de erros.  
-**Backend Real**: `NEXT_PUBLIC_API_MOCK=false` + configure `NEXT_PUBLIC_API_URL` com a URL do seu backend.
+O projeto está configurado para usar a API em `https://bi-velock-api.bos1wt.easypanel.host`.  
+A configuração está hardcoded no código e não requer variáveis de ambiente.
 
 ### ESLint
 

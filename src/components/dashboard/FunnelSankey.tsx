@@ -16,10 +16,27 @@ export interface FunnelSankeyProps {
 }
 
 export default function FunnelSankey({ stages, title = "Funil de Conversão" }: FunnelSankeyProps) {
-  const maxValue = useMemo(() => Math.max(...stages.map((s) => s.value)), [stages]);
+  // Calcular maxValue antes do early return (hooks devem ser chamados sempre)
+  const maxValue = useMemo(() => {
+    if (!stages || stages.length === 0) return 0;
+    return Math.max(...stages.map((s) => s.value));
+  }, [stages]);
+
+  // Validar se stages existe e tem elementos
+  if (!stages || stages.length === 0) {
+    return (
+      <Card className="p-6" data-testid="funnel-sankey">
+        <h3 className="text-lg font-semibold mb-6">{title}</h3>
+        <div className="text-center text-muted-foreground py-8">
+          Nenhum dado disponível
+        </div>
+      </Card>
+    );
+  }
 
   const getConversionRate = (index: number) => {
     if (index === 0) return 100;
+    if (!stages[index] || !stages[index - 1] || stages[index - 1].value === 0) return 0;
     return ((stages[index].value / stages[index - 1].value) * 100);
   };
 
@@ -68,7 +85,9 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
                 </div>
                 <div className="w-16 text-right">
                   <span className="text-sm font-medium tabular-nums">
-                    {((stage.value / stages[0].value) * 100).toFixed(1)}%
+                    {stages[0] && stages[0].value > 0 
+                      ? ((stage.value / stages[0].value) * 100).toFixed(1)
+                      : '0.0'}%
                   </span>
                 </div>
               </div>
@@ -76,14 +95,16 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
           );
         })}
       </div>
-      <div className="mt-6 pt-4 border-t border-border">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Taxa de conversão total</span>
-          <span className="font-semibold text-emerald-500">
-            {((stages[stages.length - 1].value / stages[0].value) * 100).toFixed(2)}%
-          </span>
+      {stages.length > 0 && stages[0] && stages[stages.length - 1] && stages[0].value > 0 && (
+        <div className="mt-6 pt-4 border-t border-border">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Taxa de conversão total</span>
+            <span className="font-semibold text-emerald-500">
+              {((stages[stages.length - 1].value / stages[0].value) * 100).toFixed(2)}%
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </Card>
   );
 }

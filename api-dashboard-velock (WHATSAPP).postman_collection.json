@@ -1,0 +1,1040 @@
+{
+	"info": {
+		"_postman_id": "0db44b20-67e7-4c93-9e28-0c702524bf85",
+		"name": "api-dashboard-velock (WHATSAPP)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30895958",
+		"_collection_link": "https://spaceadm.postman.co/workspace/VLOCK~3a71a8be-9e3c-4495-b66e-0ba88df02ffa/collection/30895958-0db44b20-67e7-4c93-9e28-0c702524bf85?action=share&source=collection_link&creator=30895958"
+	},
+	"item": [
+		{
+			"name": "pixels",
+			"item": [
+				{
+					"name": "createPixel",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"affiliateId\": \"01K84KAV2GQA9YH05PJ5TR4F161\",\r\n    \"name\": \"1231231\",\r\n    \"pixelId\": \"31\",\r\n    \"eventTestCode\": \"123123123\",\r\n    \"apiToken\": \":gh_Lb6JnJMzE-7\",\r\n    \"isValid\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/pixels/create",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"pixels",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findPixel",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/pixels/by?pixelId=3",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"pixels",
+								"by"
+							],
+							"query": [
+								{
+									"key": "pixelId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findPixels",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/pixels/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"pixels",
+								""
+							],
+							"query": [
+								{
+									"key": "affiliateId",
+									"value": "01K820F4W1JWM72SE1MAKCFYBK",
+									"disabled": true
+								},
+								{
+									"key": "affiliateNull",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findPixelsByAffiliate",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/pixels/by-affiliate/?affiliateId=01K84KAV2GQA9YH05PJ5TR4F161",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"pixels",
+								"by-affiliate",
+								""
+							],
+							"query": [
+								{
+									"key": "affiliateId",
+									"value": "01K84KAV2GQA9YH05PJ5TR4F161"
+								},
+								{
+									"key": "affiliateNull",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePixel",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"velock-velho\",\r\n    // \"pixelId\": \"ASD94J3As213dJSDS12D3ASDUsa2\",\r\n    \"apiToken\": \"ASD94J3As213dJSDS12D3ASDU12ASDA98679S\",\r\n    \"isValid\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/pixels/update/01K84PQXQZETR7QFNTG0MAAA5V",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"pixels",
+								"update",
+								"01K84PQXQZETR7QFNTG0MAAA5V"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePixel",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/pixels/delete/01K5WBKJBVK5180YN90EJHESD2",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"pixels",
+								"delete",
+								"01K5WBKJBVK5180YN90EJHESD2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "clientes",
+			"item": [
+				{
+					"name": "findClientes",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/clients?startDate=2025-08-22&endDate=2025-08-22&onlyExpertIds=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"clients"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-08-22"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-08-22"
+								},
+								{
+									"key": "onlyExpertIds",
+									"value": "true"
+								},
+								{
+									"key": "expert",
+									"value": "Naor",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "affiliates",
+			"item": [
+				{
+					"name": "findAffiliates",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/affiliates",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"affiliates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAffiliates Copy",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/affiliates/by?id=01JQ9WESSZAR2QYSTZFA1F7N81",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"affiliates",
+								"by"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "01JQ9WESSZAR2QYSTZFA1F7N81"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAffiliate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"João Silva - Afiliado\",\r\n    \"facebookInfo\": [\r\n        {\r\n            \"accountId\": \"123456789012345\",\r\n            \"sourceId\": \"fb_source_001\"\r\n        },\r\n        {\r\n            \"accountId\": \"987654321098765\",\r\n            \"sourceId\": \"fb_source_002\"\r\n        }\r\n    ],\r\n    \"vturbIds\": [\r\n        \"vturb_id_001\",\r\n        \"vturb_id_002\",\r\n        \"vturb_id_003\"\r\n    ],\r\n    \"generalInfo\": \"Afiliado especializado em marketing digital e vendas online. Atua principalmente no nicho de educação financeira.\",\r\n    \"nicochatToken\": \"nico_token_abc123xyz789\",\r\n    \"prompts\": {\r\n        \"live_alavancagem\": \"Olá! Estamos ao vivo agora discutindo estratégias de alavancagem. Não perca!\",\r\n        \"cupons_ativos\": \"🎉 CUPOM ATIVO: Use o código SAVE20 e ganhe 20% de desconto!\",\r\n        \"erro_plataforma\": \"Estamos enfrentando uma instabilidade temporária. Nossa equipe já está trabalhando na solução.\",\r\n        \"aulas_avulsas\": \"📚 Aulas avulsas disponíveis! Escolha o tema que mais te interessa.\",\r\n        \"mentoria\": \"💡 Mentoria personalizada disponível. Agende sua sessão individual!\"\r\n    },\r\n    \"user\": \"01K1H6DBF8PZKE00B13K6MKYYR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/affiliates/create",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"affiliates",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAffiliate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"João Silva - Afiliado novo\"\r\n    // \"facebookInfo\": [\r\n    //     {\r\n    //         \"accountId\": \"123456789012345\",\r\n    //         \"sourceId\": \"fb_source_001\"\r\n    //     },\r\n    //     {\r\n    //         \"accountId\": \"987654321098765\",\r\n    //         \"sourceId\": \"fb_source_002\"\r\n    //     }\r\n    // ],\r\n    // \"vturbIds\": [\r\n    //     \"vturb_id_001\",\r\n    //     \"vturb_id_002\",\r\n    //     \"vturb_id_003\"\r\n    // ],\r\n    // \"generalInfo\": \"Afiliado especializado em marketing digital e vendas online. Atua principalmente no nicho de educação financeira.\",\r\n    // \"nicochatToken\": \"nico_token_abc123xyz789\",\r\n    // \"prompts\": {\r\n    //     \"live_alavancagem\": \"Olá! Estamos ao vivo agora discutindo estratégias de alavancagem. Não perca!\",\r\n    //     \"cupons_ativos\": \"🎉 CUPOM ATIVO: Use o código SAVE20 e ganhe 20% de desconto!\",\r\n    //     \"erro_plataforma\": \"Estamos enfrentando uma instabilidade temporária. Nossa equipe já está trabalhando na solução.\",\r\n    //     \"aulas_avulsas\": \"📚 Aulas avulsas disponíveis! Escolha o tema que mais te interessa.\",\r\n    //     \"mentoria\": \"💡 Mentoria personalizada disponível. Agende sua sessão individual!\"\r\n    // },\r\n    // \"userId\": \"01HKMR4Q2EXAMPLE123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/affiliates/update/01K80XZ1SD1HFH78HA3T5TA0TQ",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"affiliates",
+								"update",
+								"01K80XZ1SD1HFH78HA3T5TA0TQ"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "createUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//   \"name\": \"admin\",\n//   \"email\": \"admin@email.com\",\n//   \"password\": \"12345678\",\n//   \"role\": \"ADMIN\", //OPTIONAL\n//   \"authorized\": true //OPTIONAL\n// }\n{\n    \"name\": \"Novo\",\n    \"email\": \"novo@veloc.com\",\n    \"password\": \"123qwe!@#QWE\",\n    \"role\": \"GESTOR\",\n    \"authorized\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/create",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/01K0A7E33BMRGCT13CFWGQQM5H",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"01K0A7E33BMRGCT13CFWGQQM5H"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "novo@veloc.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"name\": \"João Silva Campos\"\n    //   \"email\": \"felipe@veloc.com\"\n    //   \"phone\": \"11987654321\"\n    //   \"phoneCountryCode\": \"+55\", //OPTIONAL\n    //   \"cpf\": \"12345678901\"\n    //   \"password\": \"123457Raman$\"\n    //   \"planId\": \"plan-premium\", //OPTIONAL\n    //   \"planExpiration\": \"2025-12-31T23:59:59.000Z\", //OPTIONAL\n    \"role\": \"AFILIADO\"\n    //   \"authorized\": true //OPTIONAL\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/update/01K07WA1006N7EQY2XH857N4TD",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"update",
+								"01K07WA1006N7EQY2XH857N4TD"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restoreUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_USER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/restore/01K05QMMRASMHEE5JH0PTBDEMN",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"restore",
+								"01K05QMMRASMHEE5JH0PTBDEMN"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_USER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/delete/01K0A7E33BMRGCT13CFWGQQM5H",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"delete",
+								"01K0A7E33BMRGCT13CFWGQQM5H"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "signupAuth",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"super\",\n    \"email\": \"super123123@email.com\",\n    \"password\": \"123qwe!@#QWE\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/signup",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signinAuth",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"oxdr@email.com\",\n    \"password\": \"123qwe!@#QWE\"\n}\n// {\n//     \"email\": \"valter@veloc.com\",\n//     \"password\": \"@Valter123\"\n// }\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/signin",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resetPassword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"88653361\",\n    \"userId\": \"01K4MY00SB6HQ5S79NWFX2GJ4Q\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/reset-pass",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"reset-pass"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "configuracoes",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"affiliateId\": \"01JJZCPAG1T7ZT8NM3TT2VWCV8\",\r\n    \"generalInfo\": \"informações gerais do Raman\",\r\n    \"liveTimes\": [\r\n        // {\r\n        //     \"start\": \"12:03\",\r\n        //     \"end\": \"12:03\"\r\n        // },\r\n        {\r\n            \"start\": \"08:00\",\r\n            \"end\": \"10:00\"\r\n        },\r\n        {\r\n            \"start\": \"18:00\",\r\n            \"end\": \"20:00\"\r\n        }\r\n    ],\r\n    \"events\": [\r\n        {\r\n            \"title\": \"xxxxxxxx\",\r\n            \"description\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\r\n            \"date\": \"2025-07-31T20:48:02.692Z\",\r\n            \"start\": \"12:23\"\r\n        },\r\n        {\r\n            \"title\": \"zzzzzzzzzz\",\r\n            \"description\": \"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\",\r\n            \"date\": \"2025-07-31T20:48:36.137Z\",\r\n            \"start\": \"12:23\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/configuracoes/create",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"configuracoes",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/configs",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"configs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{TOKEN_SUPER}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/configuracoes",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"configuracoes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "metrics",
+			"item": [
+				{
+					"name": "findMetricsGerais",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/metrics/gerais?affiliateId=01JEWMVBQQR45W1W5STTBG0CQC&affiliateId=01JJZCPAG1T7ZT8NM3TT2VWCV8&affiliateId=01JK902NNR533QJS3VP0PWDBK7&affiliateId=01JG7Q06FDCM1HAZZKC45MV0W0&affiliateId=01JMV00KP9K5N3GGN556CDNCJH&affiliateId=01JQ9WESSZAR2QYSTZFA1F7N81&affiliateId=01JH93PMEY4BPECQ5AKQTDW268&affiliateId=01JEZ4DV4N2G1MTAK80Q9093ZS&affiliateId=FELIPE&startDate=2025-10-04&endDate=2025-10-04",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"metrics",
+								"gerais"
+							],
+							"query": [
+								{
+									"key": "affiliateId",
+									"value": "01JEWMVBQQR45W1W5STTBG0CQC"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JJZCPAG1T7ZT8NM3TT2VWCV8"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JK902NNR533QJS3VP0PWDBK7"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JG7Q06FDCM1HAZZKC45MV0W0"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JMV00KP9K5N3GGN556CDNCJH"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JQ9WESSZAR2QYSTZFA1F7N81"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JH93PMEY4BPECQ5AKQTDW268"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JEZ4DV4N2G1MTAK80Q9093ZS"
+								},
+								{
+									"key": "affiliateId",
+									"value": "FELIPE"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-10-04"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findMetricsEngajamento",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/metrics/engajamento?affiliateId=01JMV00KP9K5N3GGN556CDNCJH&affiliateId=01JH93PMEY4BPECQ5AKQTDW268&startDate=2025-11-02&endDate=2025-11-03",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"metrics",
+								"engajamento"
+							],
+							"query": [
+								{
+									"key": "affiliateId",
+									"value": "01JEWMVBQQR45W1W5STTBG0CQC",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JJZCPAG1T7ZT8NM3TT2VWCV8",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JK902NNR533QJS3VP0PWDBK7",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JG7Q06FDCM1HAZZKC45MV0W0",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JMV00KP9K5N3GGN556CDNCJH"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JQ9WESSZAR2QYSTZFA1F7N81",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JH93PMEY4BPECQ5AKQTDW268"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JEZ4DV4N2G1MTAK80Q9093ZS",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "FELIPE",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "2025-11-02"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-11-03"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findMetricsCampanhas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/metrics/campanhas?affiliateId=01JH93PMEY4BPECQ5AKQTDW268&affiliateId=01JEZ4DV4N2G1MTAK80Q9093ZS&startDate=2025-11-22&endDate=2025-12-02",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"metrics",
+								"campanhas"
+							],
+							"query": [
+								{
+									"key": "affiliateId",
+									"value": "01JEWMVBQQR45W1W5STTBG0CQC",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JJZCPAG1T7ZT8NM3TT2VWCV8",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JK902NNR533QJS3VP0PWDBK7",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JG7Q06FDCM1HAZZKC45MV0W0",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JMV00KP9K5N3GGN556CDNCJH",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JQ9WESSZAR2QYSTZFA1F7N81",
+									"disabled": true
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JH93PMEY4BPECQ5AKQTDW268"
+								},
+								{
+									"key": "affiliateId",
+									"value": "01JEZ4DV4N2G1MTAK80Q9093ZS"
+								},
+								{
+									"key": "affiliateId",
+									"value": "FELIPE",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "2025-11-22"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-12-02"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

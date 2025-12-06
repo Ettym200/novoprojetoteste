@@ -37,7 +37,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              `connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}`,
+              `connect-src 'self' https://bi-velock-api.bos1wt.easypanel.host`,
             ].join('; ')
           }
         ],

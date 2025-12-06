@@ -1,5 +1,7 @@
 // Tipos relacionados a Jogadores
 
+import type { FilterParams } from './common';
+
 export interface Player {
   id: string;
   name: string;

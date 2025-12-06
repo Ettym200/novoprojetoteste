@@ -1,9 +1,8 @@
-import { LoginForm } from "@/components/login-form";
-import { GalleryVerticalEnd } from "lucide-react";
+import { GalleryVerticalEnd } from "lucide-react"
 
-export default function HomePage() {
-  // Por enquanto, sempre mostrar login na página principal
-  // No futuro, verificar se usuário está autenticado e redirecionar
+import { LoginForm } from "@/components/login-form"
+
+export default function LoginPage() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -25,5 +24,5 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
       </div>
     </div>
-  );
+  )
 }

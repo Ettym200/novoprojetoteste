@@ -2,9 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { Campaign, CampaignFilters } from '@/types/campaign';
+import type { ChartDataPoint } from '@/components/dashboard/MetricChart';
 import { api } from '@/lib/api/client';
 import { ENDPOINTS } from '@/lib/api/endpoints';
-import { mockCampaigns, mockCampaignTrendData } from '@/__mocks__/campaigns';
+// Mocks removidos - sempre retornar zeros/vazios em caso de erro
 
 // Query keys para React Query
 export const campaignKeys = {
@@ -24,22 +25,27 @@ export function useCampaigns(filters?: CampaignFilters) {
   return useQuery<Campaign[]>({
     queryKey: campaignKeys.list(filters),
     queryFn: async () => {
-      const response = await api.get<Campaign[]>(ENDPOINTS.CAMPAIGNS.LIST);
-      let data = response.data;
-      
-      // Aplicar filtros localmente (ou no backend)
-      if (filters?.search) {
-        const search = filters.search.toLowerCase();
-        data = data.filter(c => c.name.toLowerCase().includes(search));
+      try {
+        const response = await api.get<Campaign[]>(ENDPOINTS.CAMPAIGNS.LIST);
+        let data = response.data || [];
+        
+        // Aplicar filtros localmente (ou no backend)
+        if (filters?.search) {
+          const search = filters.search.toLowerCase();
+          data = data.filter(c => c.name.toLowerCase().includes(search));
+        }
+        
+        if (filters?.status && filters.status !== 'all') {
+          data = data.filter(c => c.status === filters.status);
+        }
+        
+        return data;
+      } catch (error) {
+        console.warn('Erro ao buscar campanhas, retornando vazio:', error);
+        return [];
       }
-      
-      if (filters?.status && filters.status !== 'all') {
-        data = data.filter(c => c.status === filters.status);
-      }
-      
-      return data;
     },
-    placeholderData: mockCampaigns,
+    placeholderData: undefined, // Não usar mocks
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 }
@@ -52,10 +58,15 @@ export function useCampaign(id: string) {
   return useQuery<Campaign | undefined>({
     queryKey: campaignKeys.detail(id),
     queryFn: async () => {
-      const response = await api.get<Campaign>(ENDPOINTS.CAMPAIGNS.DETAIL(id));
-      return response.data;
+      try {
+        const response = await api.get<Campaign>(ENDPOINTS.CAMPAIGNS.DETAIL(id));
+        return response.data;
+      } catch (error) {
+        console.warn('Erro ao buscar campanha, retornando undefined:', error);
+        return undefined;
+      }
     },
-    placeholderData: mockCampaigns.find(c => c.id === id),
+    placeholderData: undefined, // Não usar mocks
     enabled: !!id,
   });
 }
@@ -65,13 +76,18 @@ export function useCampaign(id: string) {
  * TODO: Substituir mock por chamada real quando API estiver pronta
  */
 export function useCampaignTrends() {
-  return useQuery({
+  return useQuery<ChartDataPoint[]>({
     queryKey: campaignKeys.trends(),
     queryFn: async () => {
-      const response = await api.get(ENDPOINTS.CAMPAIGNS.LIST + '/trends');
-      return response.data;
+      try {
+        const response = await api.get<ChartDataPoint[]>(ENDPOINTS.CAMPAIGNS.LIST + '/trends');
+        return response.data || [];
+      } catch (error) {
+        console.warn('Erro ao buscar tendências de campanhas, retornando vazio:', error);
+        return [];
+      }
     },
-    placeholderData: mockCampaignTrendData,
+    placeholderData: undefined, // Não usar mocks
     staleTime: 1000 * 60 * 5,
   });
 }
