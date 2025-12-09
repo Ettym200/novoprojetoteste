@@ -35,8 +35,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/lib/services/authService";
+import { getUserRoleFromToken } from "@/lib/utils/jwt";
+import type { UserRole } from "@/types/user";
 
-const menuItems = [
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  roles?: UserRole[]; // Roles permitidos (se não especificado, todos podem ver)
+}
+
+const menuItems: MenuItem[] = [
   {
     title: "Dashboard Geral",
     url: "/dashboard",
@@ -56,6 +65,7 @@ const menuItems = [
     title: "Campanhas",
     url: "/campaigns",
     icon: Megaphone,
+    roles: ["GESTOR"], // Apenas GESTORES podem ver
   },
   {
     title: "Análises",
@@ -80,6 +90,7 @@ interface AppSidebarProps {
 export default function AppSidebar({ userName = "Super Admin", userRole = "Administrador" }: AppSidebarProps) {
   const pathname = usePathname();
   const queryClient = useQueryClient();
+  const currentUserRole = getUserRoleFromToken();
 
   const handleSignOut = () => {
     // Limpar cache do React Query antes de fazer logout
@@ -90,6 +101,14 @@ export default function AppSidebar({ userName = "Super Admin", userRole = "Admin
     // Fazer logout
     signOut();
   };
+
+  // Filtrar itens do menu baseado no role do usuário
+  const filteredMenuItems = menuItems.filter((item) => {
+    // Se o item não tem restrição de role, todos podem ver
+    if (!item.roles) return true;
+    // Se tem restrição, verificar se o role atual está na lista
+    return currentUserRole && item.roles.includes(currentUserRole);
+  });
 
   return (
     <Sidebar data-testid="app-sidebar">
@@ -112,7 +131,7 @@ export default function AppSidebar({ userName = "Super Admin", userRole = "Admin
           <SidebarGroupLabel>Métricas</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {filteredMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild

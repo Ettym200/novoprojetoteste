@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import CampaignTable from "@/components/dashboard/CampaignTable";
 import type { Campaign } from "@/types/campaign";
 import KpiCard from "@/components/dashboard/KpiCard";
@@ -16,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Megaphone, Eye, MousePointer, DollarSign, Target, TrendingUp } from "lucide-react";
+import { Megaphone, Eye, MousePointer, DollarSign, Target, TrendingUp, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCampaigns, useCampaignTrends } from "@/lib/services/campaignService";
 import { formatCurrency, formatNumber, formatPercentage, safeDivide } from "@/lib/utils/format";
@@ -25,8 +26,39 @@ import { calculateConversionRate } from "@/lib/utils/metrics";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { format } from "date-fns";
+import { getUserRoleFromToken } from "@/lib/utils/jwt";
 
 export default function Campaigns() {
+  const router = useRouter();
+  const userRole = getUserRoleFromToken();
+
+  // Verificar se o usuário é GESTOR
+  useEffect(() => {
+    if (userRole !== "GESTOR") {
+      router.push("/dashboard");
+    }
+  }, [userRole, router]);
+
+  // Se não for GESTOR, mostrar mensagem de acesso negado
+  if (userRole !== "GESTOR") {
+    return (
+      <div className="flex flex-col h-full">
+        <DashboardHeader
+          title="Campanhas"
+          subtitle="Gestão e análise de campanhas de tráfego"
+        />
+        <div className="flex-1 flex items-center justify-center">
+          <Card className="p-8 max-w-md text-center">
+            <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-2xl font-bold mb-2">Acesso Negado</h2>
+            <p className="text-muted-foreground">
+              Apenas gestores têm acesso a esta página.
+            </p>
+          </Card>
+        </div>
+      </div>
+    );
+  }
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   
   // Estado para o range de datas selecionado
