@@ -116,7 +116,7 @@ export default function DashboardGeral() {
               title="Total Investido"
               value={kpis?.totalInvested || 0}
               format="currency"
-              change={-56.48}
+              change={kpis?.changes?.totalInvested || 0}
               icon={iconMap.DollarSign}
               iconBgClass="bg-primary/10"
             />
@@ -124,7 +124,7 @@ export default function DashboardGeral() {
               title="Total de FTD"
               value={kpis?.totalFtd || 0}
               format="currency"
-              change={-81.84}
+              change={kpis?.changes?.totalFtd || 0}
               icon={iconMap.Target}
               iconBgClass="bg-emerald-500/10"
             />
@@ -132,7 +132,7 @@ export default function DashboardGeral() {
               title="Total de Depósitos"
               value={kpis?.totalDeposits || 0}
               format="currency"
-              change={-82.89}
+              change={kpis?.changes?.totalDeposits || 0}
               icon={iconMap.ArrowDownCircle}
               iconBgClass="bg-blue-500/10"
             />
@@ -140,7 +140,7 @@ export default function DashboardGeral() {
               title="Total de Saques"
               value={kpis?.totalWithdrawals || 0}
               format="currency"
-              change={-97.19}
+              change={kpis?.changes?.totalWithdrawals || 0}
               icon={iconMap.Wallet}
               iconBgClass="bg-amber-500/10"
             />
@@ -153,7 +153,7 @@ export default function DashboardGeral() {
               title="GGR"
               value={kpis?.ggr || 0}
               format="currency"
-              change={256.82}
+              change={kpis?.changes?.ggr || 0}
               icon={iconMap.TrendingUp}
               iconBgClass="bg-emerald-500/10"
             />
@@ -161,7 +161,7 @@ export default function DashboardGeral() {
               title="NGR"
               value={kpis?.ngr || 0}
               format="currency"
-              change={-199.57}
+              change={kpis?.changes?.ngr || 0}
               icon={iconMap.BarChart3}
               iconBgClass="bg-purple-500/10"
             />
@@ -169,7 +169,7 @@ export default function DashboardGeral() {
               title="Lucro Líquido"
               value={kpis?.netProfit || 0}
               format="currency"
-              change={-103.70}
+              change={kpis?.changes?.netProfit || 0}
               icon={iconMap.PiggyBank}
               iconBgClass="bg-cyan-500/10"
             />
@@ -177,7 +177,7 @@ export default function DashboardGeral() {
               title="ROI de FTD"
               value={kpis?.roiFtd || 0}
               format="percentage"
-              change={-99.09}
+              change={kpis?.changes?.roiFtd || 0}
               icon={iconMap.Users}
               iconBgClass="bg-rose-500/10"
             />
@@ -191,7 +191,7 @@ export default function DashboardGeral() {
               title="Custo por Lead WhatsApp"
               value={kpis?.costPerWhatsAppLead || 0}
               format="currency"
-              change={-30.62}
+              change={kpis?.changes?.costPerWhatsAppLead || 0}
               icon={iconMap.Clock}
               iconBgClass="bg-green-500/10"
             />
@@ -199,7 +199,7 @@ export default function DashboardGeral() {
               title="Custo por Cadastro"
               value={kpis?.costPerRegistration || 0}
               format="currency"
-              change={-23.53}
+              change={kpis?.changes?.costPerRegistration || 0}
               icon={iconMap.Users}
               iconBgClass="bg-blue-500/10"
             />
@@ -207,7 +207,7 @@ export default function DashboardGeral() {
               title="Custo por Depósito"
               value={kpis?.costPerDeposit || 0}
               format="currency"
-              change={-3.97}
+              change={kpis?.changes?.costPerDeposit || 0}
               icon={iconMap.DollarSign}
               iconBgClass="bg-amber-500/10"
             />
@@ -215,7 +215,7 @@ export default function DashboardGeral() {
               title="Custo por FTD"
               value={kpis?.costPerFtd || 0}
               format="currency"
-              change={-26.83}
+              change={kpis?.changes?.costPerFtd || 0}
               icon={iconMap.Target}
               iconBgClass="bg-red-500/10"
             />

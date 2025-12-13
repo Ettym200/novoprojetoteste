@@ -5,12 +5,17 @@ import { api } from '@/lib/api/client';
 import { ENDPOINTS } from '@/lib/api/endpoints';
 import { getUserIdFromToken, getUserRoleFromToken } from '@/lib/utils/jwt';
 import type { MetricsGeraisResponse } from '@/types/metrics';
+import type { MetricsGeraisNewResponse } from '@/types/metricsNew';
 import type {
   FunnelStage,
   RevenueData,
   Insight,
   DashboardKPIs,
 } from '@/types/dashboard';
+import { mockMetricasGeraisNew } from '@/__mocks__/metricasGeraisNew';
+
+// TODO: Quando a API estiver pronta, mudar para false
+const USE_MOCK_DATA = true;
 
 export const dashboardKeys = {
   all: ['dashboard'] as const,
@@ -90,19 +95,66 @@ async function getAffiliateIds(): Promise<string[]> {
 }
 
 /**
+ * Helper para calcular variação percentual
+ */
+function calculatePercentageChange(atual: number, anterior: number): number {
+  if (anterior === 0) return 0;
+  return ((atual - anterior) / anterior) * 100;
+}
+
+/**
  * Hook para buscar KPIs do dashboard
- * Agrega dados de /metrics/gerais para calcular KPIs
+ * Usa a nova estrutura da API (/metrics/gerais New)
  */
 export function useDashboardKPIs(startDate?: string, endDate?: string) {
-  return useQuery<DashboardKPIs>({
+  return useQuery<DashboardKPIs & { changes: Record<string, number> }>({
     queryKey: [...dashboardKeys.kpis(), startDate, endDate],
     queryFn: async () => {
+      // TODO: Quando a API estiver pronta, remover este bloco de mock
+      if (USE_MOCK_DATA) {
+        const mockData = mockMetricasGeraisNew.data.metricasGerais;
+        const resumo = mockData.resumo;
+        const eficacia = mockData.eficaciaDeCaptacao;
+        
+        // Calcular variações percentuais
+        const changes = {
+          totalInvested: calculatePercentageChange(resumo.atual.totalInvestido, resumo.anterior.totalInvestido),
+          totalFtd: calculatePercentageChange(resumo.atual.totalFTD, resumo.anterior.totalFTD),
+          totalDeposits: calculatePercentageChange(resumo.atual.totalDepositos, resumo.anterior.totalDepositos),
+          totalWithdrawals: calculatePercentageChange(resumo.atual.totalSaques, resumo.anterior.totalSaques),
+          ggr: calculatePercentageChange(resumo.atual.GGR, resumo.anterior.GGR),
+          ngr: calculatePercentageChange(resumo.atual.NGR, resumo.anterior.NGR),
+          netProfit: calculatePercentageChange(resumo.atual.lucroLiquido, resumo.anterior.lucroLiquido),
+          roiFtd: calculatePercentageChange(resumo.atual.roiFTD, resumo.anterior.roiFTD),
+          costPerWhatsAppLead: calculatePercentageChange(eficacia.atual.custoLeadWhatsapp, eficacia.anterior.custoLeadWhatsapp),
+          costPerRegistration: calculatePercentageChange(eficacia.atual.custoCadastro, eficacia.anterior.custoCadastro),
+          costPerDeposit: calculatePercentageChange(eficacia.atual.custoDeposito, eficacia.anterior.custoDeposito),
+          costPerFtd: calculatePercentageChange(eficacia.atual.custoFTD, eficacia.anterior.custoFTD),
+        };
+        
+        return {
+          totalInvested: resumo.atual.totalInvestido,
+          totalFtd: resumo.atual.totalFTD,
+          totalDeposits: resumo.atual.totalDepositos,
+          totalWithdrawals: resumo.atual.totalSaques,
+          ggr: resumo.atual.GGR,
+          ngr: resumo.atual.NGR,
+          netProfit: resumo.atual.lucroLiquido,
+          roiFtd: resumo.atual.roiFTD,
+          costPerWhatsAppLead: eficacia.atual.custoLeadWhatsapp,
+          costPerRegistration: eficacia.atual.custoCadastro,
+          costPerDeposit: eficacia.atual.custoDeposito,
+          costPerFtd: eficacia.atual.custoFTD,
+          changes,
+        };
+      }
+      
+      // Código original para quando a API estiver pronta
       try {
         // Buscar IDs de afiliados baseado no role do usuário
         const affiliateIds = await getAffiliateIds();
         
         if (affiliateIds.length === 0) {
-          // Se não houver afiliados, retornar zeros
           return {
             totalInvested: 0,
             totalFtd: 0,
@@ -116,16 +168,17 @@ export function useDashboardKPIs(startDate?: string, endDate?: string) {
             costPerRegistration: 0,
             costPerDeposit: 0,
             costPerFtd: 0,
+            changes: {},
           };
         }
         
         // Usar datas fornecidas ou padrão (hoje)
         const today = new Date();
-        const finalStartDate = startDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
-        const finalEndDate = endDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const finalStartDate = startDate || today.toISOString().split('T')[0];
+        const finalEndDate = endDate || today.toISOString().split('T')[0];
         
-        // Buscar métricas gerais da API com os IDs dos afiliados e datas
-        const response = await api.get<MetricsGeraisResponse>(ENDPOINTS.METRICS.GERAIS, {
+        // Buscar métricas gerais da API (nova estrutura)
+        const response = await api.get<MetricsGeraisNewResponse>(ENDPOINTS.METRICS.GERAIS, {
           params: {
             affiliateId: affiliateIds,
             startDate: finalStartDate,
@@ -133,9 +186,7 @@ export function useDashboardKPIs(startDate?: string, endDate?: string) {
           },
         });
         
-        // Verificar se a resposta indica erro
         if (response.data.success === false || !response.data.data) {
-          console.warn('[useDashboardKPIs] API retornou success: false ou sem data', response.data);
           return {
             totalInvested: 0,
             totalFtd: 0,
@@ -149,85 +200,46 @@ export function useDashboardKPIs(startDate?: string, endDate?: string) {
             costPerRegistration: 0,
             costPerDeposit: 0,
             costPerFtd: 0,
+            changes: {},
           };
         }
         
-        const metricsData = response.data.data;
+        const metricasGerais = response.data.data.metricasGerais;
+        const resumo = metricasGerais.resumo;
+        const eficacia = metricasGerais.eficaciaDeCaptacao;
         
-        // Agregar dados de todos os afiliados para calcular KPIs totais
-        const kpis: DashboardKPIs = {
-          // Mapear campos da API para os KPIs do dashboard
-          totalInvested: metricsData.reduce((sum, item) => sum + (item.metrics.totalInvestidoAtual || 0), 0),
-          totalFtd: metricsData.reduce((sum, item) => sum + (item.metrics.totalValorFTDsAtual || 0), 0),
-          totalDeposits: metricsData.reduce((sum, item) => sum + (item.metrics.totalValorDepositosAtual || 0), 0),
-          totalWithdrawals: metricsData.reduce((sum, item) => sum + (item.metrics.totalValorSaquesAtual || 0), 0),
-          ggr: metricsData.reduce((sum, item) => sum + (item.metrics.ggrAtual || 0), 0),
-          ngr: metricsData.reduce((sum, item) => sum + (item.metrics.ngrAtual || 0), 0),
-          netProfit: metricsData.reduce((sum, item) => sum + (item.metrics.lucroLiquidoAtual || 0), 0),
-          roiFtd: 0, // Calcular média ponderada
-          costPerWhatsAppLead: 0, // Calcular média ponderada
-          costPerRegistration: 0, // Calcular média ponderada
-          costPerDeposit: 0, // Calcular média ponderada
-          costPerFtd: 0, // Calcular média ponderada
+        // Calcular variações percentuais
+        const changes = {
+          totalInvested: calculatePercentageChange(resumo.atual.totalInvestido, resumo.anterior.totalInvestido),
+          totalFtd: calculatePercentageChange(resumo.atual.totalFTD, resumo.anterior.totalFTD),
+          totalDeposits: calculatePercentageChange(resumo.atual.totalDepositos, resumo.anterior.totalDepositos),
+          totalWithdrawals: calculatePercentageChange(resumo.atual.totalSaques, resumo.anterior.totalSaques),
+          ggr: calculatePercentageChange(resumo.atual.GGR, resumo.anterior.GGR),
+          ngr: calculatePercentageChange(resumo.atual.NGR, resumo.anterior.NGR),
+          netProfit: calculatePercentageChange(resumo.atual.lucroLiquido, resumo.anterior.lucroLiquido),
+          roiFtd: calculatePercentageChange(resumo.atual.roiFTD, resumo.anterior.roiFTD),
+          costPerWhatsAppLead: calculatePercentageChange(eficacia.atual.custoLeadWhatsapp, eficacia.anterior.custoLeadWhatsapp),
+          costPerRegistration: calculatePercentageChange(eficacia.atual.custoCadastro, eficacia.anterior.custoCadastro),
+          costPerDeposit: calculatePercentageChange(eficacia.atual.custoDeposito, eficacia.anterior.custoDeposito),
+          costPerFtd: calculatePercentageChange(eficacia.atual.custoFTD, eficacia.anterior.custoFTD),
         };
         
-        // Calcular médias ponderadas para custos
-        const totalCadastros = metricsData.reduce((sum, item) => sum + (item.metrics.totalCadastrosAtual || 0), 0);
-        const totalDepositos = metricsData.reduce((sum, item) => sum + (item.metrics.totalDepositosAtual || 0), 0);
-        const totalFTDs = metricsData.reduce((sum, item) => sum + (item.metrics.totalFTDsAtual || 0), 0);
-        
-        // Calcular ROI médio ponderado
-        if (kpis.totalInvested > 0) {
-          kpis.roiFtd = (kpis.netProfit / kpis.totalInvested) * 100;
-        } else {
-          // Se não houver investimento, calcular média dos ROIs individuais
-          const rois = metricsData
-            .map(item => item.metrics.roiFTDAtual)
-            .filter((roi): roi is number => roi !== null && typeof roi === 'number');
-          if (rois.length > 0) {
-            kpis.roiFtd = rois.reduce((sum, roi) => sum + roi, 0) / rois.length;
-          }
-        }
-        
-        // Calcular custos médios ponderados
-        if (totalCadastros > 0) {
-          kpis.costPerRegistration = metricsData.reduce((sum, item) => {
-            const custo = item.metrics.custoCadastroAtual || 0;
-            const cadastros = item.metrics.totalCadastrosAtual || 0;
-            return sum + (custo * cadastros);
-          }, 0) / totalCadastros;
-        }
-        
-        if (totalDepositos > 0) {
-          kpis.costPerDeposit = metricsData.reduce((sum, item) => {
-            const custo = item.metrics.custoDepositoAtual || 0;
-            const depositos = item.metrics.totalDepositosAtual || 0;
-            return sum + (custo * depositos);
-          }, 0) / totalDepositos;
-        }
-        
-        if (totalFTDs > 0) {
-          kpis.costPerFtd = metricsData.reduce((sum, item) => {
-            const custo = item.metrics.custoFTDAtual || 0;
-            const ftds = item.metrics.totalFTDsAtual || 0;
-            return sum + (custo * ftds);
-          }, 0) / totalFTDs;
-        }
-        
-        // Custo por lead WhatsApp (média simples já que não temos total de assinaturas)
-        const leadsWithCost = metricsData.filter(item => 
-          item.metrics.custoLeadWhatsappAtual !== null && 
-          typeof item.metrics.custoLeadWhatsappAtual === 'number'
-        );
-        if (leadsWithCost.length > 0) {
-          kpis.costPerWhatsAppLead = leadsWithCost.reduce((sum, item) => 
-            sum + (item.metrics.custoLeadWhatsappAtual as number), 0
-          ) / leadsWithCost.length;
-        }
-        
-        return kpis;
+        return {
+          totalInvested: resumo.atual.totalInvestido,
+          totalFtd: resumo.atual.totalFTD,
+          totalDeposits: resumo.atual.totalDepositos,
+          totalWithdrawals: resumo.atual.totalSaques,
+          ggr: resumo.atual.GGR,
+          ngr: resumo.atual.NGR,
+          netProfit: resumo.atual.lucroLiquido,
+          roiFtd: resumo.atual.roiFTD,
+          costPerWhatsAppLead: eficacia.atual.custoLeadWhatsapp,
+          costPerRegistration: eficacia.atual.custoCadastro,
+          costPerDeposit: eficacia.atual.custoDeposito,
+          costPerFtd: eficacia.atual.custoFTD,
+          changes,
+        };
       } catch (error) {
-        // Em caso de erro, retornar valores zerados
         console.warn('Erro ao buscar KPIs da API, retornando zeros:', error);
         return {
           totalInvested: 0,
@@ -242,38 +254,91 @@ export function useDashboardKPIs(startDate?: string, endDate?: string) {
           costPerRegistration: 0,
           costPerDeposit: 0,
           costPerFtd: 0,
+          changes: {},
         };
       }
     },
-    placeholderData: undefined, // Não usar mocks
-    staleTime: 1000 * 60 * 5, // 5 minutos
-    retry: 1, // Tentar uma vez em caso de erro
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
   });
 }
 
 /**
  * Hook para buscar estágios do funil
- * Calcula funil a partir dos dados de métricas gerais
+ * Usa a nova estrutura da API que já retorna dados do funil
  */
 export function useFunnelStages(startDate?: string, endDate?: string) {
   return useQuery<FunnelStage[]>({
     queryKey: [...dashboardKeys.funnel(), startDate, endDate],
     queryFn: async () => {
+      // TODO: Quando a API estiver pronta, remover este bloco de mock
+      if (USE_MOCK_DATA) {
+        const funilData = mockMetricasGeraisNew.data.metricasGerais.funilDeConversao;
+        const funil = funilData.funil;
+        
+        // Criar estágios do funil usando dados reais da nova estrutura
+        const stages: FunnelStage[] = [
+          { 
+            id: "1", 
+            name: "Facebook", 
+            value: funilData.totalImpressions,
+            color: "#1877F2" 
+          },
+          { 
+            id: "2", 
+            name: "Página", 
+            value: funil.pagina.total,
+            color: "#6366F1" 
+          },
+          { 
+            id: "3", 
+            name: "WhatsApp", 
+            value: funil.whatsapp.total,
+            color: "#25D366" 
+          },
+          { 
+            id: "4", 
+            name: "Corretora", 
+            value: funil.whatsapp.total, // Usar total de WhatsApp como proxy
+            color: "#F59E0B" 
+          },
+          { 
+            id: "5", 
+            name: "Cadastro", 
+            value: funil.cadastro.total,
+            color: "#8B5CF6" 
+          },
+          { 
+            id: "6", 
+            name: "FTD", 
+            value: funil.FTD.total,
+            color: "#10B981" 
+          },
+          { 
+            id: "7", 
+            name: "Redepósito", 
+            value: funil.redeposito.total,
+            color: "#06B6D4" 
+          },
+        ];
+        
+        return stages;
+      }
+      
+      // Código original para quando a API estiver pronta
       try {
-        // Buscar IDs de afiliados baseado no role do usuário
         const affiliateIds = await getAffiliateIds();
         
         if (affiliateIds.length === 0) {
           return [];
         }
         
-        // Usar datas fornecidas ou padrão (hoje)
         const today = new Date();
-        const finalStartDate = startDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
-        const finalEndDate = endDate || today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const finalStartDate = startDate || today.toISOString().split('T')[0];
+        const finalEndDate = endDate || today.toISOString().split('T')[0];
         
-        // Buscar métricas gerais com IDs dos afiliados e datas
-        const response = await api.get<MetricsGeraisResponse>(ENDPOINTS.METRICS.GERAIS, {
+        // Buscar métricas gerais (nova estrutura)
+        const response = await api.get<MetricsGeraisNewResponse>(ENDPOINTS.METRICS.GERAIS, {
           params: {
             affiliateId: affiliateIds,
             startDate: finalStartDate,
@@ -285,76 +350,60 @@ export function useFunnelStages(startDate?: string, endDate?: string) {
           return [];
         }
         
-        const metricsData = response.data.data;
+        const funilData = response.data.data.metricasGerais.funilDeConversao;
+        const funil = funilData.funil;
         
-        // Calcular totais para criar funil usando dados reais
-        const totalCadastros = metricsData.reduce((sum, item) => sum + (item.metrics.totalCadastrosAtual || 0), 0);
-        const totalFTDs = metricsData.reduce((sum, item) => sum + (item.metrics.totalFTDsAtual || 0), 0);
-        const totalDepositos = metricsData.reduce((sum, item) => sum + (item.metrics.totalDepositosAtual || 0), 0);
-        const totalClientes = metricsData.reduce((sum, item) => sum + (item.metrics.totalClientesAtual || 0), 0);
-        
-        // Se todos os valores forem zero, retornar vazio
-        if (totalCadastros === 0 && totalFTDs === 0 && totalDepositos === 0) {
-          return [];
-        }
-        
-        // Criar estágios do funil baseado nos dados reais
-        // Usar proporções aproximadas baseadas em dados típicos de funil
-        // Nota: A API não retorna dados de impressões/cliques do Facebook diretamente em /metrics/gerais
-        // Para isso, precisaríamos de /metrics/engajamento, mas por enquanto usamos estimativas
         const stages: FunnelStage[] = [
           { 
             id: "1", 
             name: "Facebook", 
-            value: Math.round(totalCadastros * 10), // Estimativa: 10x mais impressões que cadastros
+            value: funilData.totalImpressions,
             color: "#1877F2" 
           },
           { 
             id: "2", 
             name: "Página", 
-            value: Math.round(totalCadastros * 3), // Estimativa: 3x mais visitas que cadastros
+            value: funil.pagina.total,
             color: "#6366F1" 
           },
           { 
             id: "3", 
             name: "WhatsApp", 
-            value: totalClientes, // Usar totalClientes como proxy para assinaturas WhatsApp
+            value: funil.whatsapp.total,
             color: "#25D366" 
           },
           { 
             id: "4", 
             name: "Corretora", 
-            value: Math.round(totalCadastros * 1.5), // Estimativa: 1.5x mais cliques que cadastros
+            value: funil.whatsapp.total,
             color: "#F59E0B" 
           },
           { 
             id: "5", 
             name: "Cadastro", 
-            value: totalCadastros, 
+            value: funil.cadastro.total,
             color: "#8B5CF6" 
           },
           { 
             id: "6", 
             name: "FTD", 
-            value: totalFTDs, 
+            value: funil.FTD.total,
             color: "#10B981" 
           },
           { 
             id: "7", 
             name: "Redepósito", 
-            value: Math.max(0, totalDepositos - totalFTDs), 
+            value: funil.redeposito.total,
             color: "#06B6D4" 
           },
         ];
         
         return stages;
       } catch (error) {
-        // Em caso de erro, retornar funil vazio
         console.warn('Erro ao buscar funil da API, retornando vazio:', error);
         return [];
       }
     },
-    placeholderData: undefined, // Não usar mocks
     staleTime: 1000 * 60 * 5,
     retry: 1,
   });
