@@ -1,0 +1,16 @@
+var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({});
+
+var requestOptions = {
+   method: 'GET',
+   headers: myHeaders,
+   body: raw,
+   redirect: 'follow'
+};
+
+fetch("http://localhost:8090/metrics/engajamento?affiliateId=01JEWMVBQQR45W1W5STTBG0CQC&affiliateId=01JJZCPAG1T7ZT8NM3TT2VWCV8&affiliateId=01JK902NNR533QJS3VP0PWDBK7&affiliateId=01JG7Q06FDCM1HAZZKC45MV0W0&affiliateId=01JMV00KP9K5N3GGN556CDNCJH&affiliateId=01JQ9WESSZAR2QYSTZFA1F7N81&affiliateId=01JH93PMEY4BPECQ5AKQTDW268&affiliateId=01JEZ4DV4N2G1MTAK80Q9093ZS&affiliateId=FELIPE&startDate=2025-11-02&endDate=2025-11-03", requestOptions)
+   .then(response => response.text())
+   .then(result => console.log(result))
+   .catch(error => console.log('error', error));

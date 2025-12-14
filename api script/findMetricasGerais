@@ -1,0 +1,79 @@
+{
+    "success": true,
+    "message": "Requisição concluída com sucesso",
+    "data": {
+        "metricasGerais": {
+            "resumo": {
+                "atual": {
+                    "totalInvestido": 9143.11,
+                    "totalFTD": 7578,
+                    "totalDepositos": 35691,
+                    "totalSaques": 6510.41,
+                    "GGR": 29180.59,
+                    "NGR": 23959.4733,
+                    "lucroLiquido": 14816.3633,
+                    "roiFTD": -0.17117917207602232
+                },
+                "anterior": {
+                    "totalInvestido": 6830.78,
+                    "totalFTD": 63750,
+                    "totalDepositos": 120697,
+                    "totalSaques": 6498.55,
+                    "GGR": 114198.45,
+                    "NGR": 94524.7715,
+                    "lucroLiquido": 87693.9915,
+                    "roiFTD": 8.332755556466466
+                }
+            },
+            "eficaciaDeCaptacao": {
+                "atual": {
+                    "custoLeadWhatsapp": 4.383082454458294,
+                    "custoCadastro": 48.37624338624339,
+                    "custoDeposito": 91.4311,
+                    "custoFTD": 157.6398275862069
+                },
+                "anterior": {
+                    "custoLeadWhatsapp": 3.99694558221182,
+                    "custoCadastro": 5.3075213675213675,
+                    "custoDeposito": 11.365690515806987,
+                    "custoFTD": 14.68984946236559
+                }
+            },
+            "funilDeConversao": {
+                "totalImpressions": 337994,
+                "funil": {
+                    "pagina": {
+                        "total": 2692,
+                        "taxaConversaoTotal": 100,
+                        "taxaConversoes": 100,
+                        "taxaPerda": 0
+                    },
+                    "whatsapp": {
+                        "total": 2086,
+                        "taxaConversaoTotal": 77.5,
+                        "taxaConversoes": 77.5,
+                        "taxaPerda": 22.5
+                    },
+                    "cadastro": {
+                        "total": 189,
+                        "taxaConversaoTotal": 7,
+                        "taxaConversoes": 9.1,
+                        "taxaPerda": 90.9
+                    },
+                    "FTD": {
+                        "total": 58,
+                        "taxaConversaoTotal": 2.2,
+                        "taxaConversoes": 30.7,
+                        "taxaPerda": 69.3
+                    },
+                    "redeposito": {
+                        "total": 42,
+                        "taxaConversaoTotal": 1.6,
+                        "taxaConversoes": 72.4,
+                        "taxaPerda": 27.6
+                    }
+                }
+            }
+        }
+    }
+}
