@@ -107,7 +107,7 @@ export default function AppSidebar({ userName = "Super Admin", userRole = "Admin
     // Se o item não tem restrição de role, todos podem ver
     if (!item.roles) return true;
     // Se tem restrição, verificar se o role atual está na lista
-    return currentUserRole && item.roles.includes(currentUserRole);
+    return currentUserRole && item.roles.includes(currentUserRole as UserRole);
   });
 
   return (

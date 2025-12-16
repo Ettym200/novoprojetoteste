@@ -31,34 +31,8 @@ import { getUserRoleFromToken } from "@/lib/utils/jwt";
 export default function Campaigns() {
   const router = useRouter();
   const userRole = getUserRoleFromToken();
-
-  // Verificar se o usuário é GESTOR
-  useEffect(() => {
-    if (userRole !== "GESTOR") {
-      router.push("/dashboard");
-    }
-  }, [userRole, router]);
-
-  // Se não for GESTOR, mostrar mensagem de acesso negado
-  if (userRole !== "GESTOR") {
-    return (
-      <div className="flex flex-col h-full">
-        <DashboardHeader
-          title="Campanhas"
-          subtitle="Gestão e análise de campanhas de tráfego"
-        />
-        <div className="flex-1 flex items-center justify-center">
-          <Card className="p-8 max-w-md text-center">
-            <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-bold mb-2">Acesso Negado</h2>
-            <p className="text-muted-foreground">
-              Apenas gestores têm acesso a esta página.
-            </p>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  
+  // Todos os hooks devem ser chamados antes de qualquer retorno condicional
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   
   // Estado para o range de datas selecionado
@@ -90,6 +64,34 @@ export default function Campaigns() {
       activeCampaigns: campaigns.filter(c => c.status === "active").length,
     };
   }, [campaigns]);
+
+  // Verificar se o usuário é GESTOR
+  useEffect(() => {
+    if (userRole !== "GESTOR") {
+      router.push("/dashboard");
+    }
+  }, [userRole, router]);
+
+  // Se não for GESTOR, mostrar mensagem de acesso negado
+  if (userRole !== "GESTOR") {
+    return (
+      <div className="flex flex-col h-full">
+        <DashboardHeader
+          title="Campanhas"
+          subtitle="Gestão e análise de campanhas de tráfego"
+        />
+        <div className="flex-1 flex items-center justify-center">
+          <Card className="p-8 max-w-md text-center">
+            <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-2xl font-bold mb-2">Acesso Negado</h2>
+            <p className="text-muted-foreground">
+              Apenas gestores têm acesso a esta página.
+            </p>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
