@@ -2,8 +2,8 @@
 
 import type { ApiError, ApiResponse } from '@/types/api';
 
-const BASE_URL = 'https://bi-velock-api.bos1wt.easypanel.host';
-export const API_BASE_URL = BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+export const API_BASE_URL = API_URL;
 
 /**
  * Sanitiza query keys para prevenir path traversal

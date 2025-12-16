@@ -2,8 +2,7 @@
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-const BASE_URL = 'https://bi-velock-api.bos1wt.easypanel.host';
-const API_URL = BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 
 // Tipo para query params (suporta arrays)
 type QueryParams = Record<string, string | number | boolean | (string | number | boolean)[] | undefined>;
