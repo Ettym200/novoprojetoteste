@@ -38,7 +38,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              `connect-src 'self' https://bi-velock-api.bos1wt.easypanel.host`,
+              `connect-src 'self' ${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://bi-velock-api.bos1wt.easypanel.host'}`,
             ].join('; ')
           }
         ],

@@ -1,6 +1,7 @@
 // Layout para páginas autenticadas (com sidebar)
 import AppSidebar from "@/components/layout/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default function DashboardLayout({
   children,
@@ -13,14 +14,16 @@ export default function DashboardLayout({
   } as React.CSSProperties;
 
   return (
-    <SidebarProvider style={sidebarStyle}>
-      <div className="flex h-screen w-full">
-        <AppSidebar userName="Super SPACE" userRole="Administrador" />
-        <main className="flex-1 flex flex-col overflow-hidden">
-          {children}
-        </main>
-      </div>
-    </SidebarProvider>
+    <ProtectedRoute>
+      <SidebarProvider style={sidebarStyle}>
+        <div className="flex h-screen w-full">
+          <AppSidebar userName="Super SPACE" userRole="Administrador" />
+          <main className="flex-1 flex flex-col overflow-hidden">
+            {children}
+          </main>
+        </div>
+      </SidebarProvider>
+    </ProtectedRoute>
   );
 }
 

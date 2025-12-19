@@ -2,7 +2,7 @@
 
 import type { ApiError, ApiResponse } from '@/types/api';
 
-const BASE_URL = 'https://bi-velock-api.bos1wt.easypanel.host';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://bi-velock-api.bos1wt.easypanel.host';
 export const API_BASE_URL = BASE_URL;
 
 /**

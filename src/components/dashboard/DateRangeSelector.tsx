@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, subDays, startOfMonth, endOfMonth, subMonths } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   Popover,
@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { DateRange } from "react-day-picker";
+import { useDateRangeContext } from "@/contexts/DateRangeContext";
 
 type PresetDateRange = "today" | "yesterday" | "last7" | "last30" | "thisMonth" | "lastMonth" | "custom";
 
@@ -19,21 +20,20 @@ interface DateRangeSelectorProps {
   defaultRange?: PresetDateRange;
 }
 
-export default function DateRangeSelector({ onDateRangeChange, defaultRange = "today" }: DateRangeSelectorProps) {
-  const [selectedRange, setSelectedRange] = useState<PresetDateRange>(defaultRange);
+export default function DateRangeSelector({ onDateRangeChange, defaultRange }: DateRangeSelectorProps) {
+  const { selectedRange: contextRange, dateRange: contextDateRange, selectPreset, selectCustomRange } = useDateRangeContext();
   const [customModalOpen, setCustomModalOpen] = useState(false);
   const [calendarRange, setCalendarRange] = useState<DateRange | undefined>();
 
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const last7 = new Date(today);
-  last7.setDate(last7.getDate() - 7);
-  const last30 = new Date(today);
-  last30.setDate(last30.getDate() - 30);
-  const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-  const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-  const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+  // Criar datas sem hora para evitar problemas de timezone
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = subDays(today, 1);
+  const last7 = subDays(today, 7);
+  const last30 = subDays(today, 30);
+  const thisMonthStart = startOfMonth(today);
+  const lastMonthStart = startOfMonth(subMonths(today, 1));
+  const lastMonthEnd = endOfMonth(subMonths(today, 1));
 
   const rangeOptions: Array<{ value: PresetDateRange; label: string; from: Date; to: Date }> = [
     { value: "today", label: "Hoje", from: today, to: today },
@@ -44,8 +44,15 @@ export default function DateRangeSelector({ onDateRangeChange, defaultRange = "t
     { value: "lastMonth", label: "Mês passado", from: lastMonthStart, to: lastMonthEnd },
   ];
 
+  // Sincronizar com contexto quando mudar
+  useEffect(() => {
+    if (onDateRangeChange) {
+      onDateRangeChange({ from: contextDateRange.from, to: contextDateRange.to });
+    }
+  }, [contextDateRange, onDateRangeChange]);
+
   const handleSelect = (range: PresetDateRange) => {
-    setSelectedRange(range);
+    selectPreset(range);
     const option = rangeOptions.find(r => r.value === range);
     if (option && onDateRangeChange) {
       onDateRangeChange({ from: option.from, to: option.to });
@@ -55,9 +62,10 @@ export default function DateRangeSelector({ onDateRangeChange, defaultRange = "t
   const handleCustomDateConfirm = () => {
     if (!calendarRange?.from || !calendarRange?.to) return;
     
-    setSelectedRange("custom");
+    const customRange = { from: calendarRange.from, to: calendarRange.to };
+    selectCustomRange(customRange);
     if (onDateRangeChange) {
-      onDateRangeChange({ from: calendarRange.from, to: calendarRange.to });
+      onDateRangeChange(customRange);
     }
     setCustomModalOpen(false);
   };
@@ -68,7 +76,7 @@ export default function DateRangeSelector({ onDateRangeChange, defaultRange = "t
         {rangeOptions.map((option) => (
           <Button
             key={option.value}
-            variant={selectedRange === option.value ? "default" : "ghost"}
+            variant={contextRange === option.value ? "default" : "ghost"}
             size="sm"
             onClick={() => handleSelect(option.value)}
             data-testid={`button-date-range-${option.value}`}
@@ -79,7 +87,7 @@ export default function DateRangeSelector({ onDateRangeChange, defaultRange = "t
         <Popover open={customModalOpen} onOpenChange={setCustomModalOpen}>
           <PopoverTrigger asChild>
             <Button
-              variant={selectedRange === "custom" ? "default" : "ghost"}
+              variant={contextRange === "custom" ? "default" : "ghost"}
               size="sm"
               data-testid="button-date-range-custom"
             >

@@ -46,6 +46,18 @@ export function formatDate(date: Date | string, format: 'short' | 'long' = 'shor
 }
 
 /**
+ * Formata data para formato YYYY-MM-DD usado pela API
+ * Garante que a data seja formatada corretamente sem problemas de timezone
+ */
+export function formatDateForAPI(date: Date): string {
+  // Criar nova data com apenas ano, mês e dia (sem hora)
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
  * Divide dois números de forma segura, evitando divisão por zero
  * @param a - Numerador
  * @param b - Denominador

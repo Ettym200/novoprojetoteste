@@ -22,21 +22,18 @@ import {
 import { useDashboardKPIs, useFunnelStages, useRevenueData, useInsights } from "@/lib/services/dashboardService";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ErrorMessage } from "@/components/ui/error-message";
-import { format } from "date-fns";
+import { useDateRangeContext } from "@/contexts/DateRangeContext";
+import { formatDateForAPI } from "@/lib/utils/format";
 
 export default function DashboardGeral() {
   const [, setRefreshing] = useState(false);
   
-  // Estado para o range de datas selecionado
-  const today = new Date();
-  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: today,
-    to: today,
-  });
+  // Usar contexto global de data
+  const { dateRange } = useDateRangeContext();
 
-  // Converter datas para formato YYYY-MM-DD
-  const startDate = useMemo(() => format(dateRange.from, 'yyyy-MM-dd'), [dateRange.from]);
-  const endDate = useMemo(() => format(dateRange.to, 'yyyy-MM-dd'), [dateRange.to]);
+  // Converter datas para formato YYYY-MM-DD usando função que evita problemas de timezone
+  const startDate = useMemo(() => formatDateForAPI(dateRange.from), [dateRange.from]);
+  const endDate = useMemo(() => formatDateForAPI(dateRange.to), [dateRange.to]);
 
   const { data: kpis, isLoading: isLoadingKPIs, isError: isErrorKPIs } = useDashboardKPIs(startDate, endDate);
   const { data: funnelStages = [], isLoading: isLoadingFunnel } = useFunnelStages(startDate, endDate);
@@ -105,7 +102,6 @@ export default function DashboardGeral() {
         onRefresh={handleRefresh}
         showSearch
         showDatePicker
-        onDateRangeChange={(range) => setDateRange(range)}
       />
 
       <div className="flex-1 overflow-auto p-3 md:p-6 space-y-4 md:space-y-6">

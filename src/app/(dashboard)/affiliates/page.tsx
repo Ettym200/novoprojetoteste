@@ -69,6 +69,7 @@ export default function Affiliates() {
       <DashboardHeader
         title="Métricas por Afiliado"
         subtitle="Performance detalhada dos experts"
+        showDatePicker
       />
 
       <div className="flex-1 overflow-auto p-6 space-y-6">
