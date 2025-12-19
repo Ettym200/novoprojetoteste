@@ -1,9 +1,23 @@
+"use client"
+
 import { LoginForm } from "@/components/login-form";
 import { GalleryVerticalEnd } from "lucide-react";
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { isAuthenticated } from "@/lib/services/authService";
 
 export default function HomePage() {
-  // Por enquanto, sempre mostrar login na página principal
-  // No futuro, verificar se usuário está autenticado e redirecionar
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  useEffect(() => {
+    // Se usuário já estiver autenticado, redirecionar para dashboard ou página de destino
+    if (isAuthenticated()) {
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.push(redirect);
+    }
+  }, [router, searchParams]);
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">

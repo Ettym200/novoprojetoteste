@@ -15,19 +15,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Verificar token no cookie ou header
-  // Nota: localStorage não está disponível no middleware, então verificamos apenas cookies
-  // A verificação completa será feita no cliente via componente de proteção
+  // Nota: Como o token está no localStorage (não acessível no middleware),
+  // não podemos fazer verificação completa aqui. A verificação real será feita
+  // no cliente via componente ProtectedRoute. Por enquanto, permitimos o acesso
+  // e deixamos o ProtectedRoute fazer a verificação e redirecionamento se necessário.
+  
+  // Verificar token no cookie ou header (opcional - para casos onde o token está em cookie)
   const token = request.cookies.get('auth_token')?.value ||
                 request.headers.get('authorization')?.replace('Bearer ', '');
 
-  // Se não houver token, redirecionar para login
-  if (!token) {
-    const loginUrl = new URL('/', request.url);
-    loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
+  // Se houver token em cookie/header, permitir acesso
+  // Se não houver, ainda permitir acesso - o ProtectedRoute no cliente fará a verificação
   return NextResponse.next();
 }
 

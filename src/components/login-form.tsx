@@ -42,16 +42,24 @@ export function LoginForm({
 
       // Verificar se login foi bem-sucedido
       if (response.token || response.user) {
-        // Redirecionar para dashboard
-        router.push("/dashboard")
+        // Aguardar um pouco para garantir que o token foi salvo no localStorage
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        // Verificar se há parâmetro de redirecionamento na URL
+        const urlParams = new URLSearchParams(window.location.search)
+        const redirect = urlParams.get('redirect') || '/dashboard'
+        
+        // Redirecionar para dashboard ou página de destino
+        router.push(redirect)
+        router.refresh() // Forçar refresh para atualizar o estado de autenticação
       } else {
         setError(response.message || "Credenciais inválidas")
+        setIsLoading(false)
       }
     } catch (err) {
       // Tratar erro
       const errorMessage = err instanceof Error ? err.message : "Erro ao fazer login. Tente novamente."
       setError(errorMessage)
-    } finally {
       setIsLoading(false)
     }
   }
