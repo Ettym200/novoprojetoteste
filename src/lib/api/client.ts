@@ -1,9 +1,9 @@
 // Cliente API unificado - sempre usa API real
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { API_BASE_URL, AUTH_TOKEN_KEY, AUTH_COOKIE_KEY } from '@/lib/constants/env';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://bi-velock-api.bos1wt.easypanel.host';
-const API_URL = BASE_URL;
+const API_URL = API_BASE_URL;
 
 // Tipo para query params (suporta arrays)
 type QueryParams = Record<string, string | number | boolean | (string | number | boolean)[] | undefined>;
@@ -49,8 +49,8 @@ const getAxiosInstance = (): AxiosInstance => {
     axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       // Buscar token do localStorage ou cookie
       if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('auth_token') || 
-                     document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+        const token = localStorage.getItem(AUTH_TOKEN_KEY) || 
+                     document.cookie.split('; ').find(row => row.startsWith(`${AUTH_COOKIE_KEY}=`))?.split('=')[1];
         
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
@@ -66,7 +66,7 @@ const getAxiosInstance = (): AxiosInstance => {
         if (error.response?.status === 401) {
           // Token inválido - limpar e redirecionar para login
           if (typeof window !== 'undefined') {
-            localStorage.removeItem('auth_token');
+            localStorage.removeItem(AUTH_TOKEN_KEY);
             window.location.href = '/';
           }
         }

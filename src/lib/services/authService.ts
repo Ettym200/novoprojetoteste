@@ -2,6 +2,7 @@
 
 import { api } from '@/lib/api/client';
 import { ENDPOINTS } from '@/lib/api/endpoints';
+import { AUTH_TOKEN_KEY } from '@/lib/constants/env';
 
 export interface SignInCredentials {
   email: string;
@@ -53,7 +54,7 @@ export async function signIn(credentials: SignInCredentials): Promise<AuthRespon
     
     // Salvar token se existir
     if (token && typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
     }
 
     // Retornar no formato esperado pelo componente
@@ -90,7 +91,7 @@ export async function signUp(data: SignUpData): Promise<AuthResponse> {
     
     // Salvar token se existir
     if (token && typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
     }
 
     // Retornar no formato esperado pelo componente
@@ -113,7 +114,7 @@ export async function signUp(data: SignUpData): Promise<AuthResponse> {
  */
 export function signOut(): void {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem(AUTH_TOKEN_KEY);
     window.location.href = '/';
   }
 }
@@ -123,7 +124,7 @@ export function signOut(): void {
  */
 export function isAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
-  return !!localStorage.getItem('auth_token');
+  return !!localStorage.getItem(AUTH_TOKEN_KEY);
 }
 
 /**
@@ -131,6 +132,6 @@ export function isAuthenticated(): boolean {
  */
 export function getAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
-  return localStorage.getItem('auth_token');
+  return localStorage.getItem(AUTH_TOKEN_KEY);
 }
 

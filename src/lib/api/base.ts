@@ -1,9 +1,9 @@
 // Configuração base do cliente HTTP
 
 import type { ApiError, ApiResponse } from '@/types/api';
+import { API_BASE_URL } from '@/lib/constants/env';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://bi-velock-api.bos1wt.easypanel.host';
-export const API_BASE_URL = BASE_URL;
+export { API_BASE_URL };
 
 /**
  * Sanitiza query keys para prevenir path traversal

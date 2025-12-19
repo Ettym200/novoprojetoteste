@@ -1,5 +1,7 @@
 // Utilitários para trabalhar com JWT
 
+import { AUTH_TOKEN_KEY, AUTH_COOKIE_KEY } from '@/lib/constants/env';
+
 /**
  * Decodifica um token JWT (sem verificar assinatura)
  * Retorna o payload do token
@@ -26,8 +28,8 @@ export function decodeJWT(token: string): Record<string, unknown> | null {
 export function getUserIdFromToken(): string | null {
   if (typeof window === 'undefined') return null;
   
-  const token = localStorage.getItem('auth_token') || 
-               document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+  const token = localStorage.getItem(AUTH_TOKEN_KEY) || 
+               document.cookie.split('; ').find(row => row.startsWith(`${AUTH_COOKIE_KEY}=`))?.split('=')[1];
   
   if (!token) return null;
   
@@ -59,8 +61,8 @@ export function getUserIdFromToken(): string | null {
 export function getUserEmailFromToken(): string | null {
   if (typeof window === 'undefined') return null;
   
-  const token = localStorage.getItem('auth_token') || 
-               document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+  const token = localStorage.getItem(AUTH_TOKEN_KEY) || 
+               document.cookie.split('; ').find(row => row.startsWith(`${AUTH_COOKIE_KEY}=`))?.split('=')[1];
   
   if (!token) return null;
   
@@ -76,8 +78,8 @@ export function getUserEmailFromToken(): string | null {
 export function getUserRoleFromToken(): string | null {
   if (typeof window === 'undefined') return null;
   
-  const token = localStorage.getItem('auth_token') || 
-               document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+  const token = localStorage.getItem(AUTH_TOKEN_KEY) || 
+               document.cookie.split('; ').find(row => row.startsWith(`${AUTH_COOKIE_KEY}=`))?.split('=')[1];
   
   if (!token) return null;
   
