@@ -50,8 +50,10 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
       <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-6">{title}</h3>
       <div className="space-y-2 md:space-y-3">
         {stages.map((stage, index) => {
+          const widthPercentage = (stage.value / maxValue) * 100;
           const conversionRate = getConversionRate(index);
           const dropoffRate = getDropoffRate(index);
+          const isFacebook = stage.name.toLowerCase() === 'facebook';
 
           return (
             <div key={stage.id} className="relative">
@@ -67,21 +69,42 @@ export default function FunnelSankey({ stages, title = "Funil de Conversão" }: 
                   </div>
                 </div>
               )}
-              <div className="flex items-center gap-2 md:gap-4 py-2">
-                <div className="text-sm md:text-base font-medium">
-                  <span className="text-foreground">{stage.name}:</span>
-                  <span className="ml-2 text-muted-foreground font-semibold">
-                    ({stage.value.toLocaleString("pt-BR")})
-                  </span>
+              {isFacebook ? (
+                // Exibir apenas texto para Facebook
+                <div className="flex items-center gap-2 md:gap-4 py-2">
+                  <div className="text-sm md:text-base font-medium">
+                    <span className="text-foreground">{stage.name}:</span>
+                    <span className="ml-2 text-muted-foreground font-semibold">
+                      ({stage.value.toLocaleString("pt-BR")})
+                    </span>
+                  </div>
                 </div>
-                <div className="ml-auto text-right">
-                  <span className="text-xs md:text-sm font-medium text-muted-foreground tabular-nums">
-                    {stages[0] && stages[0].value > 0 
-                      ? ((stage.value / stages[0].value) * 100).toFixed(1)
-                      : '0.0'}%
-                  </span>
+              ) : (
+                // Exibir barras para os demais estágios
+                <div className="flex items-center gap-2 md:gap-4 py-2">
+                  <div className="w-20 md:w-32 text-xs md:text-sm font-medium truncate">{stage.name}</div>
+                  <div className="flex-1 h-8 md:h-10 bg-muted/50 rounded-md overflow-hidden relative">
+                    <div
+                      className="h-full rounded-md transition-all duration-500 ease-out flex items-center justify-end pr-1.5 md:pr-3"
+                      style={{
+                        width: `${widthPercentage}%`,
+                        backgroundColor: stage.color,
+                      }}
+                    >
+                      <span className="text-[10px] md:text-sm font-semibold text-white drop-shadow-sm whitespace-nowrap">
+                        {stage.value.toLocaleString("pt-BR")}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 md:w-16 text-right">
+                    <span className="text-xs md:text-sm font-medium tabular-nums">
+                      {stages[0] && stages[0].value > 0 
+                        ? ((stage.value / stages[0].value) * 100).toFixed(1)
+                        : '0.0'}%
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}
